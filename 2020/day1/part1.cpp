@@ -14,6 +14,8 @@ int main()
    {
       vals.push_back(stoi(buff));
    }
+   inFile.close();
+
    size_t k, i;
    for (i = 0; i < vals.size(); i++)
    {
