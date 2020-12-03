@@ -1,12 +1,12 @@
-#if !defined(PART1_H)
-#define PART1_H
+#if !defined(part2_H)
+#define part2_H
 #include <fstream>
 #include <iostream>
 #include <vector>
 
 using namespace std;
 
-namespace part1
+namespace part2
 {
 struct Entry {
    int mMin;
@@ -14,17 +14,13 @@ struct Entry {
    char mVal;
    string mStr;
    Entry(int min, int max, char val, string str) {
-      mMin = min;
-      mMax = max;
+      mMin = min - 1;
+      mMax = max - 1;
       mVal = val;
       mStr = str;
    }
    bool isValid() {
-      int c = 0;
-      for(int i = 0; i < mStr.length(); i++) {
-         if(mStr[i] == mVal) c++;
-      }
-      return c <= mMax && c >= mMin;
+      return mStr[mMax] == mVal ^ mStr[mMin] == mVal;
    }
 };
 
@@ -68,6 +64,6 @@ int main(int argc, char const *argv[]) {
    cout << "valid entries: " << validCount << endl;
    return 0;
 }
-}  // namespace part1
+}  // namespace part2
 
 #endif
