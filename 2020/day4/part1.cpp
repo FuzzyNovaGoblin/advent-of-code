@@ -26,34 +26,32 @@ int main() {
          }
          pts.push_back(buff.length());
          // cout << buff.substr(0, pts[0]) << ":" << buff.substr(pts[0] + 1, pts[1]-1 - pts[0] + 1) << endl;
-         for (size_t i = 0; i < pts.size(); i++)
-         {
-         cout << pts[i] << " ";
+         for(size_t i = 0; i < pts.size(); i++) {
+            cout << pts[i] << " ";
          }
          cout << endl;
 
          pssPts.back()[buff.substr(0, pts[0])] = buff.substr(pts[0] + 1, pts[1] - (pts[0] + 1));
          for(int i = 2; i < pts.size(); i += 2) {
-            pssPts.back()[buff.substr(pts[i - 1] + 1, (pts[i] - 1) - (pts[i - 1] + 1)+1)] = buff.substr((pts[i] + 1), (pts[i + 1]) - (pts[i] + 1)+1);
+            pssPts.back()[buff.substr(pts[i - 1] + 1, (pts[i] - 1) - (pts[i - 1] + 1) + 1)] = buff.substr((pts[i] + 1), (pts[i + 1]) - (pts[i] + 1) + 1);
          }
       }
    }
    inFile.close();
    string reqs[] = {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"};
 
-   int count = 0;
-   int count2 = 0;
+   int count  = 0;
    cout << pssPts.size() << endl;
    for(size_t i = 0; i < pssPts.size(); i++) {
       bool tmp = true;
+      count++;
       for(size_t k = 0; k < 7; k++) {
          if(pssPts[i][reqs[k]] == "") {
-            cout << "here: " << reqs[k] <<"   " << pssPts[i][reqs[k]] << endl;
-            count++;
+            cout << "here: " << reqs[k] << "   " << pssPts[i][reqs[k]] << endl;
+            count--;
             break;
          }
       }
-
 
       cout << pssPts[i].size() << endl;
       for(std::map<string, string>::iterator it = ((pssPts[i]).begin()); it != pssPts[i].end(); ++it)
