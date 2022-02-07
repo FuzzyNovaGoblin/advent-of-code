@@ -16,9 +16,9 @@ impl PointMap {
         Self { points }
     }
 
+    #[allow(dead_code)]
     fn print_map(&mut self) {
         let mut max_width = 0;
-        let mut print_strs = Vec::<String>::new();
         for row in self.points.iter() {
             if row.len() > max_width {
                 max_width = row.len();
