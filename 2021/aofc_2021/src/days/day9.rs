@@ -54,6 +54,7 @@ where
 
     #[allow(dead_code)]
     fn print_around_point(&mut self, x: usize, y: usize) {
+        // first layer
         if y > 0 {
             if x > 0 {
                 print!("{}", self[(x - 1, y - 1)]);
@@ -69,7 +70,8 @@ where
         } else {
             print!("***");
         }
-        //----------------
+        
+        // second layer
         println!();
         if x > 0 {
             print!("{}", self[(x - 1, y)]);
@@ -83,7 +85,8 @@ where
             print!("*");
         }
         println!();
-        //----------------
+
+        // third layer
         if y < self.points[0].len() - 1 {
             if x > 0 {
                 print!("{}", self[(x - 1, y + 1)]);
@@ -165,7 +168,6 @@ pub fn day9_1() -> impl Debug {
     let mut low_points = vec![];
     for y in 0..point_map.points[0].len() {
         for x in 0..point_map.points.len() {
-            // dbg!(&point_map.points.len());
             if x > 0 && point_map[(x - 1, y)] <= point_map[(x, y)] {
                 continue;
             }
@@ -199,7 +201,6 @@ pub fn day9_2() -> impl Debug {
     let mut low_points = vec![];
     for y in 0..point_map.points[0].len() {
         for x in 0..point_map.points.len() {
-            // dbg!(&point_map.points.len());
             if x > 0 && point_map[(x - 1, y)] <= point_map[(x, y)] {
                 continue;
             }
@@ -221,6 +222,5 @@ pub fn day9_2() -> impl Debug {
     }
     basins.sort();
     basins.reverse();
-    // dbg!(basins);
     basins.iter().take(3).fold(1, |init, v| init * v)
 }
