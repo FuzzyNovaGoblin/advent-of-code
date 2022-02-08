@@ -1,6 +1,6 @@
 use std::{
     collections::{HashMap, HashSet},
-    fs,
+    fs, fmt::Debug,
 };
 
 #[derive(Debug)]
@@ -51,7 +51,7 @@ impl Data {
     }
 }
 
-pub fn day8_1() -> u32 {
+pub fn day8_1() -> impl Debug {
     let input_file = format!("{}/aofc_2021/input/day8", env!("ADVENT_OF_CODE_2021"));
     let _data = fs::read_to_string(input_file);
     let data = _data

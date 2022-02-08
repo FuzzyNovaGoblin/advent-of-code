@@ -1,5 +1,5 @@
 use aofc_2021::prelude::*;
 fn main() {
-    // println!("{}", day8_1());
-    println!("{}", day8_2());
+    println!("part 1: {:?}", day9_1());
+    println!("part 2: {:?}", day9_2());
 }
