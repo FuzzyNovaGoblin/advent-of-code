@@ -25,6 +25,7 @@ pub mod days {
     pub mod day8;
     pub mod day9;
 }
+pub mod point_map;
 
 pub mod prelude {
     pub use super::days::day1::{day1_1, day1_2};
