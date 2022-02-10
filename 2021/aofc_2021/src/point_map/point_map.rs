@@ -1,11 +1,14 @@
 #![allow(dead_code)]
-use std::{fmt::Display, ops};
+use std::{
+    fmt::{Debug, Display},
+    ops,
+};
 
 use crate::point_map::DimentionIter;
 
 pub type CordPoint = (usize, usize);
 
-#[derive(Debug, Default)]
+#[derive(Default)]
 pub struct PointMap<T> {
     points: Vec<Vec<T>>,
 }
@@ -35,23 +38,23 @@ where
         // second layer
 
         if x > 0 {
-            ret_points.push((x-1, y));
+            ret_points.push((x - 1, y));
         }
         ret_points.push((x, y));
 
         if x < self.points.len() - 1 {
-            ret_points.push((x+1, y));
+            ret_points.push((x + 1, y));
         }
 
         // third layer
         if y < self.points[0].len() - 1 {
             if x > 0 {
-                ret_points.push((x-1, y+1));
+                ret_points.push((x - 1, y + 1));
             }
-            ret_points.push((x, y+1));
+            ret_points.push((x, y + 1));
 
             if x < self.points.len() - 1 {
-                ret_points.push((x+1, y+1));
+                ret_points.push((x + 1, y + 1));
             }
         }
 
@@ -120,6 +123,17 @@ impl<T> PointMap<T> {
     }
 }
 
+impl<T> Debug for PointMap<T>
+where
+    T: Display + Default,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "PointMap {{\n\tdimentions: {:?},\n\tmap:\n{}\n}}", self.get_dimentions(), format!("{}", self).split("\n").map(|s|format!("\t     {}\n", s)).collect::<String>())
+    }
+
+
+}
+
 impl<T> Display for PointMap<T>
 where
     T: Display + Default,
@@ -130,26 +144,26 @@ where
             max_size = std::cmp::max(format!("{}", self[point]).len(), max_size);
         }
 
-        let print_h_line = |f: &mut std::fmt::Formatter<'_>| -> std::fmt::Result {
-            writeln!(
+        let write_h_line = |f: &mut std::fmt::Formatter<'_>| -> std::fmt::Result {
+            write!(
                 f,
                 "{}",
                 std::iter::repeat("*")
-                    .take(self.points.len()*(max_size+1) + 4)
+                    .take(self.points.len() * (max_size + 1) + 4)
                     .collect::<String>()
             )
         };
 
-      print_h_line(f)?;
+        write_h_line(f)?;
+        writeln!(f)?;
         for y in 0..self.points[0].len() {
-            print!("**");
+            write!(f, "**")?;
             for x in 0..self.points.len() {
                 write!(f, "{:max_size$} ", self.points[x][y], max_size = max_size)?;
             }
             writeln!(f, "**")?;
         }
-      print_h_line(f)?;
-
+        write_h_line(f)?;
 
         Ok(())
     }

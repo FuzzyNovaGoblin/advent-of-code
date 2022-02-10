@@ -11,3 +11,8 @@ let input_file = format!("{}/aofc_2021/input/day12", env!("ADVENT_OF_CODE_2021")
     let _data = fs::read_to_string(input_file);
 	todo!()
 }
+
+#[cfg(test)]
+mod test{
+    
+}

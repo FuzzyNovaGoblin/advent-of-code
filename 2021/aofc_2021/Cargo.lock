@@ -5,3 +5,11 @@ version = 3
 [[package]]
 name = "aofc_2021"
 version = "0.1.0"
+dependencies = [
+ "dbgu",
+]
+
+[[package]]
+name = "dbgu"
+version = "0.1.0"
+source = "git+https://github.com/FuzzyNovaGoblin/ugly_dbg#9862877da730045f88aff2d445e21f07bf4d7cd4"

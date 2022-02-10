@@ -1,6 +1,8 @@
 use std::{cell::RefCell, fs, rc::Rc};
 
+
 use crate::point_map::{CordPoint, DimentionIter, PointMap};
+
 
 impl PointMap<u32> {}
 
@@ -73,8 +75,7 @@ pub fn day11_1() -> impl std::fmt::Debug {
 }
 
 pub fn day11_2() -> impl std::fmt::Debug {
-    // let input_file = format!("{}/aofc_2021/input/day11", env!("ADVENT_OF_CODE_2021"));
-    let input_file = format!("{}/aofc_2021/input/test", env!("ADVENT_OF_CODE_2021"));
+    let input_file = format!("{}/aofc_2021/input/day11", env!("ADVENT_OF_CODE_2021"));
     let _data = fs::read_to_string(input_file);
     let mut point_map = PointMap::default();
     for (y, line) in _data.unwrap().split("\n").enumerate() {
@@ -87,7 +88,8 @@ pub fn day11_2() -> impl std::fmt::Debug {
     let flashes = Rc::new(RefCell::new(0));
     let already_exploded = Rc::new(RefCell::new(vec![]));
     let mut count = 0;
-    while {let b = already_exploded.borrow(); b.len() < map_len} {
+
+    while already_exploded.borrow().len() < map_len {
         {
             let mut b = already_exploded.borrow_mut();
             b.clear();
