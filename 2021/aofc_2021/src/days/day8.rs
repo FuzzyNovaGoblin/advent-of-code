@@ -3,7 +3,6 @@ use std::{
     fs, fmt::Debug,
 };
 
-#[derive(Debug)]
 struct Data {
     pub input: Vec<HashSet<char>>,
     pub output: Vec<HashSet<char>>,

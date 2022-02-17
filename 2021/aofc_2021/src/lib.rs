@@ -1,3 +1,4 @@
+#![feature(hash_drain_filter)]
 pub mod days {
     pub mod day1;
     pub mod day10;

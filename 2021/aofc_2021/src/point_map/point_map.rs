@@ -6,6 +6,7 @@ use std::{
 
 use crate::point_map::DimentionIter;
 
+
 pub type CordPoint = (usize, usize);
 
 #[derive(Default)]
