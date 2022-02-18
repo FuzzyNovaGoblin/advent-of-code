@@ -8,6 +8,7 @@ struct Data {
     pub output: Vec<HashSet<char>>,
     pub num_map: HashMap<u32, HashSet<char>>,
     pub wire_map: HashMap<char, char>,
+    #[allow(dead_code)]
     pub debug_output: Vec<String>,
 }
 

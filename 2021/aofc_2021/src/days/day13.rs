@@ -6,8 +6,8 @@ use crate::{
 };
 
 mod fold_map {
-    use std::collections::{hash_map, HashMap};
-    use std::{fmt, ops, slice, vec};
+    use std::collections::HashMap;
+    use std::{fmt, ops};
 
     use crate::point_map::CordPoint;
 
@@ -96,7 +96,7 @@ mod fold_map {
         fn fold_h(&mut self, x_val: usize) {
             let new_points = self
                 .points
-                .drain_filter(|point, val| point.0 > x_val)
+                .drain_filter(|point, _v| point.0 > x_val)
                 .collect::<Vec<_>>();
 
             self.greatest_point.0 = x_val - 1;
@@ -108,7 +108,7 @@ mod fold_map {
         fn fold_v(&mut self, y_val: usize) {
             let new_points = self
                 .points
-                .drain_filter(|point, val| point.1 > y_val)
+                .drain_filter(|point, _val| point.1 > y_val)
                 .collect::<Vec<_>>();
             self.greatest_point.1 = y_val - 1;
             for ((x, y), _) in new_points {
@@ -172,11 +172,13 @@ pub fn day13_1(file_name: &str) -> impl std::fmt::Debug {
         }
         break;
     }
-    fold_map.into_iter().fold(0, |sum, v| if v.1 {sum + 1}else{sum})
+    fold_map
+        .into_iter()
+        .fold(0, |sum, v| if v.1 { sum + 1 } else { sum })
 }
 
 pub fn day13_2(file_name: &str) -> impl std::fmt::Debug {
-   let input_file = format!(
+    let input_file = format!(
         "{}/aofc_2021/input/{}",
         env!("ADVENT_OF_CODE_2021"),
         file_name
@@ -225,11 +227,13 @@ pub fn day13_2(file_name: &str) -> impl std::fmt::Debug {
 
 #[cfg(test)]
 mod test {
+    use crate::assert_eq_dbgfmt;
+
     use super::*;
 
     #[test]
+    #[ignore]
     fn t1() {
-        assert_eq!(format!("{:?}", 17), format!("{:?}", day13_1("test")));
+        assert_eq_dbgfmt!(17, day13_1("test"));
     }
-    fn t2() {}
 }

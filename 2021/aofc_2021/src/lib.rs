@@ -55,3 +55,10 @@ pub mod prelude {
     pub use super::days::day8::{day8_1, day8_2};
     pub use super::days::day9::{day9_1, day9_2};
 }
+
+#[macro_export]
+macro_rules! assert_eq_dbgfmt {
+    ($a:expr, $b:expr) => {
+        assert_eq!(format!("{:?}", $a), format!("{:?}", $b), "expected {} to be {}", stringify!($b), stringify!($a));
+    };
+}
