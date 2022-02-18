@@ -1,4 +1,5 @@
 #![feature(hash_drain_filter)]
+#![feature(default_free_fn)]
 pub mod days {
     pub mod day1;
     pub mod day10;
@@ -59,6 +60,6 @@ pub mod prelude {
 #[macro_export]
 macro_rules! assert_eq_dbgfmt {
     ($a:expr, $b:expr) => {
-        assert_eq!(format!("{:?}", $a), format!("{:?}", $b), "expected {} to be {}", stringify!($b), stringify!($a));
+        assert_eq!(format!("{:?}", $a), format!("{:?}", $b), "\nexpected {} to be {}", stringify!($b), stringify!($a));
     };
 }

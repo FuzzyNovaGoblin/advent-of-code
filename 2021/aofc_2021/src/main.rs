@@ -1,5 +1,4 @@
 #![feature(concat_idents)]
-#![feature(type_alias_impl_trait)]
 
 use std::env::args;
 
@@ -16,8 +15,7 @@ macro_rules! getday_fn {
                     );
                     println!(
                         "part 2: {:?}",
-                        concat_idents!(da, $n, _2)(format!("test").as_str())
-                        // concat_idents!(da, $n, _2)(format!("day{}", $day_num).as_str())
+                        concat_idents!(da, $n, _2)(format!("day{}", $day_num).as_str())
                     );
                 }
             )*

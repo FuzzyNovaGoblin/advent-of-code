@@ -1,4 +1,12 @@
-use std::{collections::HashMap, fs};
+use std::{
+    cell::RefCell,
+    collections::HashMap,
+    default::default,
+    fs,
+    rc::Rc,
+    sync::{Arc, Mutex},
+    thread,
+};
 
 pub fn day14_1(file_name: &str) -> impl std::fmt::Debug {
     let input_file = format!(
@@ -50,19 +58,119 @@ pub fn day14_1(file_name: &str) -> impl std::fmt::Debug {
         data_code = next_code;
     }
 
-    char_counts.iter().reduce(|largest, current| if current.1 > largest.1{current}else{largest}).unwrap().1-
-    char_counts.iter().reduce(|smallest, current| if current.1 < smallest.1{current}else{smallest}).unwrap().1
 
+    char_counts
+        .iter()
+        .reduce(|largest, current| {
+            if current.1 > largest.1 {
+                current
+            } else {
+                largest
+            }
+        })
+        .unwrap()
+        .1
+        - char_counts
+            .iter()
+            .reduce(|smallest, current| {
+                if current.1 < smallest.1 {
+                    current
+                } else {
+                    smallest
+                }
+            })
+            .unwrap()
+            .1
+}
+
+fn rec_get_conversion(
+    pair: (char, char),
+    depth: u8,
+    max_depth: u8,
+    // char_counts: Rc<RefCell<HashMap<char, usize>>>,
+    pair_conversion: Arc<HashMap<(char, char), char>>,
+    final_conversions: Arc<Mutex<HashMap<(u8, (char, char)), HashMap<char, usize>>>>,
+) -> HashMap<char, usize> {
+    if depth >= max_depth {
+        return default();
+    }
+    {
+
+            if let Ok(mg_fc) = final_conversions.lock() {
+                if mg_fc.contains_key(&(depth, pair)) {
+                    return mg_fc[&(depth, pair)].clone();
+                }
+            }
+    }
+
+    let mut char_count = HashMap::new();
+    let new_char = pair_conversion[&pair];
+    {
+        let ent = char_count.entry(new_char).or_insert(0);
+        *ent += 1;
+    }
+    let mut threads = Vec::new();
+    {
+        let pair_conversion = pair_conversion.clone();
+        let final_conversions = final_conversions.clone();
+        threads.push(thread::spawn(move || {
+            rec_get_conversion(
+                (pair.0, new_char),
+                depth + 1,
+                max_depth,
+                pair_conversion,
+                final_conversions,
+            )
+        }));
+    }
+    if depth >= 3 {
+        while let Some(t) = threads.pop() {
+            match t.join() {
+                Ok(m) => for (c, count) in m {
+                let ent = char_count.entry(c).or_insert(0);
+                *ent += count;
+            },
+                Err(e) => {eprintln!("error: {:?}", e); panic!("error")},
+            }
+
+        }
+    }
+    {
+        let final_conversions = final_conversions.clone();
+        threads.push(thread::spawn(move || {
+            rec_get_conversion(
+                (new_char, pair.1),
+                depth + 1,
+                max_depth,
+                pair_conversion,
+                final_conversions,
+            )
+        }));
+    }
+    while let Some(t) = threads.pop() {
+        for (c, count) in t.join().expect("thread failed") {
+            let ent = char_count.entry(c).or_insert(0);
+            *ent += count;
+        }
+    }
+
+    {
+        if let Ok(mut mg_fc) = final_conversions.lock() {
+            mg_fc.insert((depth, pair), char_count.clone());
+        }
+    }
+
+    char_count
 }
 
 pub fn day14_2(file_name: &str) -> impl std::fmt::Debug {
-  let input_file = format!(
+    let input_file = format!(
         "{}/aofc_2021/input/{}",
         env!("ADVENT_OF_CODE_2021"),
         file_name
     );
     let _data = fs::read_to_string(input_file);
-    let (mut data_code, pair_conversion) = {
+    let (data_code, pair_conversion) = {
         let both = _data
             .unwrap()
             .split("\n\n")
@@ -82,32 +190,66 @@ pub fn day14_2(file_name: &str) -> impl std::fmt::Debug {
         )
     };
 
-    let mut char_counts: HashMap<char, u32> = HashMap::new();
+    let pair_conversion = Arc::new(pair_conversion);
+    let final_conversions = Arc::new(Mutex::new(HashMap::new()));
+    let char_counts: Rc<RefCell<HashMap<char, usize>>> = Rc::new(RefCell::new(HashMap::new()));
 
-    for c in data_code.iter() {
-        let e = char_counts.entry(*c).or_default();
+
+    {
+        let mut char_counts = char_counts.borrow_mut();
+        let  ent = char_counts.entry(data_code[0]).or_default();
+        *ent += 1;
+    }
+
+    let mut threads = Vec::new();
+    for c in data_code
+        .iter()
+        .map(|c| *c)
+        .zip(data_code.clone().iter().skip(1).map(|c| *c))
+    {
+        let pair_conversion = pair_conversion.clone();
+        let final_conversions = final_conversions.clone();
+        threads.push(thread::spawn(move || {
+            rec_get_conversion(c, 0, 40, pair_conversion, final_conversions)
+        }));
+        let mut char_counts = char_counts.borrow_mut();
+        let e = char_counts.entry(c.1).or_insert(0);
         *e += 1;
     }
 
-    for i in 0..40 {
-dbg!(i);
-        let mut next_code = Vec::new();
-        next_code.push(data_code[0]);
-        for c in data_code
-            .iter()
-            .map(|c| *c)
-            .zip(data_code.iter().skip(1).map(|c| *c))
-        {
-            next_code.push(pair_conversion[&c]);
-            let e = char_counts.entry(pair_conversion[&c]).or_default();
-            *e += 1;
-            next_code.push(c.1);
+    let mut char_counts = char_counts.borrow_mut();
+    for t in threads {
+        for (c, count) in t.join().expect("thread failed") {
+            let ent = char_counts.entry(c).or_insert(0);
+            *ent += count;
         }
-        data_code = next_code;
     }
 
-    char_counts.iter().reduce(|largest, current| if current.1 > largest.1{current}else{largest}).unwrap().1-
-    char_counts.iter().reduce(|smallest, current| if current.1 < smallest.1{current}else{smallest}).unwrap().1
+
+    {
+        char_counts
+            .iter()
+            .reduce(|largest, current| {
+                if current.1 > largest.1 {
+                    current
+                } else {
+                    largest
+                }
+            })
+            .unwrap()
+            .1
+            - char_counts
+                .iter()
+                .reduce(|smallest, current| {
+                    if current.1 < smallest.1 {
+                        current
+                    } else {
+                        smallest
+                    }
+                })
+                .unwrap()
+                .1
+    }
 }
 
 #[cfg(test)]
@@ -121,6 +263,6 @@ mod test {
     }
     #[test]
     fn t2() {
-        assert_eq_dbgfmt!(2188189693529_u64, day14_2("test"));
+        assert_eq_dbgfmt!(2188189693529_usize, day14_2("test"));
     }
 }
