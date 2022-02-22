@@ -141,12 +141,12 @@ mod test {
 
     #[test]
     #[ignore]
-    fn test1() {
-        assert_eq!(10, day12_1("test"));
+    fn t1() {
+        assert_eq!(4304, day12_1("day12"));
     }
     #[test]
     #[ignore]
-    fn test2() {
-        assert_eq!(36, day12_2("test"));
+    fn t2() {
+        assert_eq!(118242, day12_2("day12"));
     }
 }

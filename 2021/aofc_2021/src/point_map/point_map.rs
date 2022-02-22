@@ -6,7 +6,6 @@ use std::{
 
 use crate::point_map::DimentionIter;
 
-
 pub type CordPoint = (usize, usize);
 
 #[derive(Default)]
@@ -21,7 +20,35 @@ where
     pub fn from(points: Vec<Vec<T>>) -> Self {
         Self { points }
     }
+    pub fn get_boardering_points_with_center(&self, point: CordPoint) -> Vec<CordPoint> {
+        let mut ret_val = self.get_boardering_points(point);
+        ret_val.push(point);
+        ret_val
+    }
+    pub fn get_cross_adjacent_points(&self, (x, y): CordPoint) -> Vec<CordPoint> {
+        let mut ret_points = vec![];
+        // first layer
+        if y > 0 {
+            ret_points.push((x, y - 1));
+        }
 
+        // second layer
+
+        if x > 0 {
+            ret_points.push((x - 1, y));
+        }
+
+        if x < self.points.len() - 1 {
+            ret_points.push((x + 1, y));
+        }
+
+        // third layer
+        if y < self.points[0].len() - 1 {
+            ret_points.push((x, y + 1));
+        }
+
+        ret_points
+    }
     pub fn get_boardering_points(&self, (x, y): CordPoint) -> Vec<CordPoint> {
         let mut ret_points = vec![];
         // first layer
@@ -41,7 +68,6 @@ where
         if x > 0 {
             ret_points.push((x - 1, y));
         }
-        ret_points.push((x, y));
 
         if x < self.points.len() - 1 {
             ret_points.push((x + 1, y));
@@ -124,15 +150,27 @@ impl<T> PointMap<T> {
     }
 }
 
+// impl<T:Display> Into<PointMap<String>> for PointMap<T> {
+//     fn into(self) -> PointMap<String> {
+//         PointMap::from(self.points.map(|v| v.map(|item| format!("{}",item))))
+//     }
+// }
+
 impl<T> Debug for PointMap<T>
 where
     T: Display + Default,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "PointMap {{\n\tdimentions: {:?},\n\tmap:\n{}\n}}", self.get_dimentions(), format!("{}", self).split("\n").map(|s|format!("\t     {}\n", s)).collect::<String>())
+        write!(
+            f,
+            "PointMap {{\n\tdimentions: {:?},\n\tmap:\n{}\n}}",
+            self.get_dimentions(),
+            format!("{}", self)
+                .split("\n")
+                .map(|s| format!("\t     {}\n", s))
+                .collect::<String>()
+        )
     }
-
-
 }
 
 impl<T> Display for PointMap<T>

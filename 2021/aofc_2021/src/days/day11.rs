@@ -22,7 +22,7 @@ fn handle_explosion(
         b.push(start_point)
     }
 
-    for point in point_map.get_boardering_points(start_point) {
+    for point in point_map.get_boardering_points_with_center(start_point) {
         point_map[point] += 1;
     }
 }

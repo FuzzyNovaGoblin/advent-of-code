@@ -258,11 +258,13 @@ mod test {
     use crate::assert_eq_dbgfmt;
 
     #[test]
+    #[ignore]
     fn t1() {
-        assert_eq_dbgfmt!(1588, day14_1("test"));
+        assert_eq_dbgfmt!(3259, day14_1("day14"));
     }
     #[test]
+    #[ignore]
     fn t2() {
-        assert_eq_dbgfmt!(2188189693529_usize, day14_2("test"));
+        assert_eq_dbgfmt!(3459174981021_usize, day14_2("day14"));
     }
 }
