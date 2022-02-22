@@ -40,8 +40,8 @@ fn get_compeltion_char_points(c: char) -> u128 {
     }
 }
 
-pub fn day10_1() -> impl std::fmt::Debug {
-    let input_file = format!("{}/aofc_2021/input/day10", env!("ADVENT_OF_CODE_2021"));
+pub fn day10_1 (file_name: &str)->  impl crate::AnsType{
+	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let _data = fs::read_to_string(input_file).unwrap();
     let lines = _data.split("\n");
 
@@ -61,8 +61,8 @@ pub fn day10_1() -> impl std::fmt::Debug {
     error_points
 }
 
-pub fn day10_2() -> impl std::fmt::Debug {
-    let input_file = format!("{}/aofc_2021/input/day10", env!("ADVENT_OF_CODE_2021"));
+pub fn day10_2 (file_name: &str)->  impl crate::AnsType{
+	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let _data = fs::read_to_string(input_file).unwrap();
     let lines = _data.split("\n");
 

@@ -1,8 +1,6 @@
 use std::{cell::RefCell, fs, rc::Rc};
 
-
 use crate::point_map::{CordPoint, DimentionIter, PointMap};
-
 
 impl PointMap<u32> {}
 
@@ -27,8 +25,12 @@ fn handle_explosion(
     }
 }
 
-pub fn day11_1() -> impl std::fmt::Debug {
-    let input_file = format!("{}/aofc_2021/input/day11", env!("ADVENT_OF_CODE_2021"));
+pub fn day11_1(file_name: &str) -> impl crate::AnsType {
+    let input_file = format!(
+        "{}/aofc_2021/input/{}",
+        env!("ADVENT_OF_CODE_2021"),
+        file_name
+    );
     let _data = fs::read_to_string(input_file);
     let mut point_map = PointMap::default();
     for (y, line) in _data.unwrap().split("\n").enumerate() {
@@ -74,8 +76,12 @@ pub fn day11_1() -> impl std::fmt::Debug {
     flashes.take()
 }
 
-pub fn day11_2() -> impl std::fmt::Debug {
-    let input_file = format!("{}/aofc_2021/input/day11", env!("ADVENT_OF_CODE_2021"));
+pub fn day11_2(file_name: &str) -> impl crate::AnsType {
+    let input_file = format!(
+        "{}/aofc_2021/input/{}",
+        env!("ADVENT_OF_CODE_2021"),
+        file_name
+    );
     let _data = fs::read_to_string(input_file);
     let mut point_map = PointMap::default();
     for (y, line) in _data.unwrap().split("\n").enumerate() {

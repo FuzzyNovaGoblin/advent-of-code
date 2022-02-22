@@ -48,8 +48,10 @@ How many measurements are larger than the previous measurement?
 
 use std::fs;
 
-pub fn day1_1() {
-    let input_file = format!("{}/aofc_2021/input/day1", env!("ADVENT_OF_CODE_2021"));
+use crate::AnsType;
+
+pub fn day1_1(file_name: &str) -> impl AnsType{
+     let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let data = fs::read_to_string(input_file)
         .expect("couldn't read in file")
         .split("\n")
@@ -66,11 +68,12 @@ pub fn day1_1() {
         }
         last = *i;
     }
-    println!("{}", bigger_count);
+    bigger_count
 }
 
-pub fn day1_2() -> i32{
-    let input_file = format!("{}/aofc_2021/input/day1", env!("ADVENT_OF_CODE_2021"));
+pub fn day1_2 (file_name: &str)->  impl crate::AnsType{
+	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
+
     let data = fs::read_to_string(input_file)
         .unwrap()
         .split("\n")

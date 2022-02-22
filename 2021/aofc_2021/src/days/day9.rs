@@ -70,7 +70,7 @@ where
         } else {
             print!("***");
         }
-        
+
         // second layer
         println!();
         if x > 0 {
@@ -156,8 +156,8 @@ where
     }
 }
 
-pub fn day9_1() -> impl Debug {
-    let input_file = format!("{}/aofc_2021/input/day9", env!("ADVENT_OF_CODE_2021"));
+pub fn day9_1 (file_name: &str)->  impl crate::AnsType{
+	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let _data = fs::read_to_string(input_file).unwrap();
     let mut point_map = PointMap::default();
     for (y, line) in _data.split("\n").enumerate() {
@@ -189,8 +189,8 @@ pub fn day9_1() -> impl Debug {
         .fold(0, |sum_val, v| sum_val + (v + 1))
 }
 
-pub fn day9_2() -> impl Debug {
-    let input_file = format!("{}/aofc_2021/input/day9", env!("ADVENT_OF_CODE_2021"));
+pub fn day9_2 (file_name: &str)->  impl crate::AnsType{
+	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let _data = fs::read_to_string(input_file).unwrap();
     let mut point_map = PointMap::default();
     for (y, line) in _data.split("\n").enumerate() {

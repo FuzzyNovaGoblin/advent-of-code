@@ -8,7 +8,7 @@ use std::{
     thread,
 };
 
-pub fn day14_1(file_name: &str) -> impl std::fmt::Debug {
+pub fn day14_1(file_name: &str) -> impl crate::AnsType  {
     let input_file = format!(
         "{}/aofc_2021/input/{}",
         env!("ADVENT_OF_CODE_2021"),
@@ -163,7 +163,7 @@ fn rec_get_conversion(
     char_count
 }
 
-pub fn day14_2(file_name: &str) -> impl std::fmt::Debug {
+pub fn day14_2(file_name: &str) -> impl crate::AnsType  {
     let input_file = format!(
         "{}/aofc_2021/input/{}",
         env!("ADVENT_OF_CODE_2021"),
@@ -255,16 +255,16 @@ pub fn day14_2(file_name: &str) -> impl std::fmt::Debug {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::assert_eq_dbgfmt;
+    use crate::{assert_eq_dbgfmt, AnsType};
 
     #[test]
     #[ignore]
     fn t1() {
-        assert_eq_dbgfmt!(3259, day14_1("day14"));
+        assert_eq_dbgfmt!(3259.value(), day14_1("day14").value());
     }
     #[test]
     #[ignore]
     fn t2() {
-        assert_eq_dbgfmt!(3459174981021_usize, day14_2("day14"));
+        assert_eq_dbgfmt!(3459174981021_usize.value(), day14_2("day14").value());
     }
 }

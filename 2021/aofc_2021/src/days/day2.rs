@@ -18,8 +18,9 @@ impl Directrion {
     }
 }
 
-pub fn day2_1() -> i32 {
-    let input_file = format!("{}/aofc_2021/input/day2", env!("ADVENT_OF_CODE_2021"));
+pub fn day2_1 (file_name: &str)->  impl crate::AnsType{
+	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
+
     let data = fs::read_to_string(input_file).unwrap();
     let data = data.split("\n").filter_map(|s| {
         let splt_data = s.split(" ").collect::<Vec<_>>();
@@ -41,8 +42,8 @@ pub fn day2_1() -> i32 {
     d_pos * h_pos
 }
 
-pub fn day2_2() -> i32{
-    let input_file = format!("{}/aofc_2021/input/day2", env!("ADVENT_OF_CODE_2021"));
+pub fn day2_2 (file_name: &str)->  impl crate::AnsType{
+	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let data = fs::read_to_string(input_file).unwrap();
     let data = data.split("\n").filter_map(|s| {
         let splt_data = s.split(" ").collect::<Vec<_>>();

@@ -98,8 +98,8 @@ impl ops::IndexMut<(usize, usize)> for PointMap {
     }
 }
 
-pub fn day5_1() -> i32 {
-    let input_file = format!("{}/aofc_2021/input/day5", env!("ADVENT_OF_CODE_2021"));
+pub fn day5_1 (file_name: &str)->  impl crate::AnsType{
+	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let data = fs::read_to_string(input_file).unwrap();
     let paths = data
         .split("\n")
@@ -146,8 +146,8 @@ pub fn day5_1() -> i32 {
         .fold(0, |acc, val| if val >= 2 { acc + 1 } else { acc })
 }
 
-pub fn day5_2() -> i32{
-    let input_file = format!("{}/aofc_2021/input/day5", env!("ADVENT_OF_CODE_2021"));
+pub fn day5_2 (file_name: &str)->  impl crate::AnsType{
+	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let data = fs::read_to_string(input_file).unwrap();
     let paths = data
         .split("\n")

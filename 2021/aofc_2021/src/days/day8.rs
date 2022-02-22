@@ -1,6 +1,6 @@
 use std::{
     collections::{HashMap, HashSet},
-    fs, fmt::Debug,
+    fs,
 };
 
 struct Data {
@@ -51,8 +51,12 @@ impl Data {
     }
 }
 
-pub fn day8_1() -> impl Debug {
-    let input_file = format!("{}/aofc_2021/input/day8", env!("ADVENT_OF_CODE_2021"));
+pub fn day8_1(file_name: &str) -> impl crate::AnsType {
+    let input_file = format!(
+        "{}/aofc_2021/input/{}",
+        env!("ADVENT_OF_CODE_2021"),
+        file_name
+    );
     let _data = fs::read_to_string(input_file);
     let data = _data
         .unwrap()
@@ -78,8 +82,12 @@ pub fn day8_1() -> impl Debug {
     count
 }
 
-pub fn day8_2() -> u32 {
-    let input_file = format!("{}/aofc_2021/input/day8", env!("ADVENT_OF_CODE_2021"));
+pub fn day8_2(file_name: &str) -> impl crate::AnsType {
+    let input_file = format!(
+        "{}/aofc_2021/input/{}",
+        env!("ADVENT_OF_CODE_2021"),
+        file_name
+    );
     let _data = fs::read_to_string(input_file);
     let mut data = _data
         .unwrap()
@@ -96,7 +104,6 @@ pub fn day8_2() -> u32 {
 
     let mut out_sum = 0;
     for data_line in &mut data {
-
         for i in &mut data_line.input {
             let key = match i.len() {
                 4 => 4,

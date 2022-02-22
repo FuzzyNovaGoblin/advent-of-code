@@ -3,6 +3,7 @@ use std::fs;
 use crate::{
     days::day13::fold_map::{FoldMap, MapFold, SplitDirection},
     point_map::CordPoint,
+    AnsType,
 };
 
 mod fold_map {
@@ -10,6 +11,7 @@ mod fold_map {
     use std::{fmt, ops};
 
     use crate::point_map::CordPoint;
+    use crate::AnsType;
 
     #[derive(Default)]
     pub struct FoldMap {
@@ -49,6 +51,12 @@ mod fold_map {
                 write!(f, "\n")?;
             }
             Ok(())
+        }
+    }
+
+    impl AnsType for FoldMap {
+        fn value(&self) -> String {
+            format!("{:?}", self)
         }
     }
 
@@ -127,7 +135,7 @@ fn default<T: Default>() -> T {
     T::default()
 }
 
-pub fn day13_1(file_name: &str) -> impl std::fmt::Debug {
+pub fn day13_1(file_name: &str) -> impl AnsType {
     let input_file = format!(
         "{}/aofc_2021/input/{}",
         env!("ADVENT_OF_CODE_2021"),
@@ -177,7 +185,7 @@ pub fn day13_1(file_name: &str) -> impl std::fmt::Debug {
         .fold(0, |sum, v| if v.1 { sum + 1 } else { sum })
 }
 
-pub fn day13_2(file_name: &str) -> impl std::fmt::Debug {
+pub fn day13_2(file_name: &str) -> impl AnsType {
     let input_file = format!(
         "{}/aofc_2021/input/{}",
         env!("ADVENT_OF_CODE_2021"),
@@ -234,12 +242,12 @@ mod test {
     #[test]
     #[ignore]
     fn t1() {
-        assert_eq_dbgfmt!(607, day13_1("day13"));
+        assert_eq_dbgfmt!(607.value(), day13_1("day13").value());
     }
     #[test]
     #[ignore]
     fn t2() {
         let ans = ".##..###..####.#....###..####.####.#....\n#..#.#..#....#.#....#..#.#.......#.#....\n#....#..#...#..#....#..#.###....#..#....\n#....###...#...#....###..#.....#...#....\n#..#.#....#....#....#....#....#....#....\n.##..#....####.####.#....#....####.####.\n";
-        assert_eq_dbgfmt!(ans, format!("{:?}",day13_2("day13")));
+        assert_eq_dbgfmt!(ans.value(),  day13_2("day13").value());
     }
 }

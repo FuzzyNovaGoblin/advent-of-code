@@ -8,7 +8,7 @@ use crate::point_map::DimentionIter;
 
 pub type CordPoint = (usize, usize);
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct PointMap<T> {
     points: Vec<Vec<T>>,
 }
@@ -21,66 +21,49 @@ where
         Self { points }
     }
     pub fn get_boardering_points_with_center(&self, point: CordPoint) -> Vec<CordPoint> {
-        let mut ret_val = self.get_boardering_points(point);
-        ret_val.push(point);
-        ret_val
+        self.get_boardering_points(point, 0b_111_111_111)
     }
-    pub fn get_cross_adjacent_points(&self, (x, y): CordPoint) -> Vec<CordPoint> {
+
+    pub fn get_boardering_points(&self, (x, y): CordPoint, include_mask: u16) -> Vec<CordPoint> {
         let mut ret_points = vec![];
         // first layer
         if y > 0 {
-            ret_points.push((x, y - 1));
-        }
-
-        // second layer
-
-        if x > 0 {
-            ret_points.push((x - 1, y));
-        }
-
-        if x < self.points.len() - 1 {
-            ret_points.push((x + 1, y));
-        }
-
-        // third layer
-        if y < self.points[0].len() - 1 {
-            ret_points.push((x, y + 1));
-        }
-
-        ret_points
-    }
-    pub fn get_boardering_points(&self, (x, y): CordPoint) -> Vec<CordPoint> {
-        let mut ret_points = vec![];
-        // first layer
-        if y > 0 {
-            if x > 0 {
+            if (0b_100_000_000 & include_mask) > 0 && x > 0 {
                 ret_points.push((x - 1, y - 1));
             }
-            ret_points.push((x, y - 1));
+            if (0b_010_000_000 & include_mask) > 0 {
+                ret_points.push((x, y - 1));
+            }
 
-            if x < self.points.len() - 1 {
+            if (0b_001_000_000 & include_mask) > 0 && x < self.points.len() - 1 {
                 ret_points.push((x + 1, y - 1));
             }
         }
 
         // second layer
 
-        if x > 0 {
+        if (0b_000_100_000 & include_mask) > 0  && x > 0 {
             ret_points.push((x - 1, y));
         }
 
-        if x < self.points.len() - 1 {
+        if (0b_000_010_000 & include_mask) > 0 {
+            ret_points.push((x, y));
+        }
+
+        if (0b_000_001_000 & include_mask) > 0 && x < self.points.len() - 1 {
             ret_points.push((x + 1, y));
         }
 
         // third layer
         if y < self.points[0].len() - 1 {
-            if x > 0 {
+            if (0b_000_000_100 & include_mask) > 0 && x > 0 {
                 ret_points.push((x - 1, y + 1));
             }
-            ret_points.push((x, y + 1));
+            if (0b_000_000_010 & include_mask) > 0 {
+                ret_points.push((x, y + 1));
+            }
 
-            if x < self.points.len() - 1 {
+            if (0b_000_000_001 & include_mask) > 0 && x < self.points.len() - 1 {
                 ret_points.push((x + 1, y + 1));
             }
         }
@@ -139,6 +122,11 @@ where
         }
         println!();
     }
+
+    pub fn len(&self) -> usize {
+        let d = self.get_dimentions();
+        d.0 * d.1
+    }
 }
 
 impl<T> PointMap<T> {
@@ -150,11 +138,23 @@ impl<T> PointMap<T> {
     }
 }
 
-// impl<T:Display> Into<PointMap<String>> for PointMap<T> {
-//     fn into(self) -> PointMap<String> {
-//         PointMap::from(self.points.map(|v| v.map(|item| format!("{}",item))))
-//     }
-// }
+auto trait NotString {}
+
+impl !NotString for String {}
+
+impl<T> From<PointMap<T>> for PointMap<String>
+where
+    T: Display + NotString,
+{
+    fn from(p: PointMap<T>) -> Self {
+        PointMap::from(
+            p.points
+                .into_iter()
+                .map(|v| v.into_iter().map(|item| format!("{}", item)).collect())
+                .collect(),
+        )
+    }
+}
 
 impl<T> Debug for PointMap<T>
 where
@@ -218,7 +218,7 @@ impl<T> ops::Index<CordPoint> for PointMap<T> {
 
 impl<T> ops::IndexMut<CordPoint> for PointMap<T>
 where
-    T: Display + Default + PartialEq<u32> + PartialOrd,
+    T: Display + Default + PartialOrd,
 {
     fn index_mut(&mut self, (x, y): CordPoint) -> &mut Self::Output {
         let (_, height) = self.get_dimentions();

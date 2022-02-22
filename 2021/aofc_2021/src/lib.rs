@@ -1,5 +1,6 @@
-#![feature(hash_drain_filter)]
-#![feature(default_free_fn)]
+#![feature(default_free_fn, hash_drain_filter, auto_traits, negative_impls)]
+
+use std::fmt::Display;
 pub mod days {
     pub mod day1;
     pub mod day10;
@@ -27,6 +28,7 @@ pub mod days {
     pub mod day8;
     pub mod day9;
 }
+pub mod dijkstra;
 pub mod point_map;
 
 pub mod prelude {
@@ -60,6 +62,40 @@ pub mod prelude {
 #[macro_export]
 macro_rules! assert_eq_dbgfmt {
     ($a:expr, $b:expr) => {
-        assert_eq!(format!("{:?}", $a), format!("{:?}", $b), "\nexpected {} to be {}", stringify!($b), stringify!($a));
+        assert_eq!(
+            format!("{:?}", $a),
+            format!("{:?}", $b),
+            "\nexpected {} to be {}",
+            stringify!($b),
+            stringify!($a)
+        );
     };
+}
+
+#[macro_export]
+macro_rules! assert_eq_ansval {
+    ($a:expr, $b:expr) => {
+        let a = crate::AnsType::value(&$a);
+        let b = crate::AnsType::value(&$b);
+        assert_eq!(a, b, "\nexpected {} to be {}", b, a);
+    };
+}
+
+pub trait AnsType {
+    fn value(&self) -> String;
+}
+
+auto trait AnsNotDispaly {}
+impl !AnsNotDispaly for () {}
+
+impl AnsType for () {
+    fn value(&self) -> String {
+        "()".into()
+    }
+}
+
+impl<T: Display + AnsNotDispaly> AnsType for T {
+    fn value(&self) -> String {
+        format!("{}", self)
+    }
 }
