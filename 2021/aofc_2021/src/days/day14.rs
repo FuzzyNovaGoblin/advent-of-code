@@ -204,7 +204,7 @@ pub fn day14_2(file_name: &str) -> impl crate::AnsType  {
     let mut threads = Vec::new();
     for c in data_code
         .iter()
-        .map(|c| *c)
+        .copied()
         .zip(data_code.clone().iter().skip(1).map(|c| *c))
     {
         let pair_conversion = pair_conversion.clone();

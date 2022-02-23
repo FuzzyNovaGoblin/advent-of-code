@@ -149,9 +149,7 @@ pub fn day3_2 (file_name: &str)->  impl crate::AnsType{
             }
             if num_count[1] == 0 {
                 0
-            } else if num_count[0] == 0 {
-                1
-            } else if num_count[1] < num_count[0] {
+            } else if num_count[0] == 0 || num_count[1] < num_count[0] {
                 1
             } else {
                 0

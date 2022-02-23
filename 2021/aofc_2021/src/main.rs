@@ -26,9 +26,7 @@ macro_rules! getday_fn {
 
 fn main() {
     let day_num = args()
-        .into_iter()
-        .skip(1)
-        .next()
+        .into_iter().nth(1)
         .expect("pass a day value")
         .parse::<u8>()
         .expect("not a valid integer");
