@@ -133,20 +133,3 @@ pub fn day12_2(file_name: &str) -> usize {
     paths.len()
 }
 
-
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    #[ignore]
-    fn t1() {
-        assert_eq!(4304, day12_1("day12"));
-    }
-    #[test]
-    #[ignore]
-    fn t2() {
-        assert_eq!(118242, day12_2("day12"));
-    }
-}

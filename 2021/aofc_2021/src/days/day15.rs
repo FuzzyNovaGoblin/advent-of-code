@@ -173,23 +173,3 @@ pub fn day15_2(file_name: &str) -> impl AnsType {
 
     distance_map[&last_point]
 }
-
-#[cfg(test)]
-mod test {
-    use super::*;
-    use crate::assert_eq_ansval;
-
-    #[test]
-    #[ignore]
-    fn t1() {
-        assert_eq_ansval!(748, day15_1("day15"));
-    }
-
-
-
-    #[test]
-    #[ignore]
-    fn t2() {
-        assert_eq_ansval!(3045, day15_2("day15"));
-    }
-}

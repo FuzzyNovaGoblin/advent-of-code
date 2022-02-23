@@ -250,20 +250,3 @@ pub fn day14_2(file_name: &str) -> impl crate::AnsType  {
                 .1
     }
 }
-
-#[cfg(test)]
-mod test {
-    use super::*;
-    use crate::{assert_eq_dbgfmt, AnsType};
-
-    #[test]
-    #[ignore]
-    fn t1() {
-        assert_eq_dbgfmt!(3259.value(), day14_1("day14").value());
-    }
-    #[test]
-    #[ignore]
-    fn t2() {
-        assert_eq_dbgfmt!(3459174981021_usize.value(), day14_2("day14").value());
-    }
-}

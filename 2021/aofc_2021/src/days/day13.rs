@@ -231,22 +231,3 @@ pub fn day13_2(file_name: &str) -> impl AnsType {
     }
     fold_map
 }
-
-#[cfg(test)]
-mod test {
-    use crate::assert_eq_dbgfmt;
-
-    use super::*;
-
-    #[test]
-    #[ignore]
-    fn t1() {
-        assert_eq_dbgfmt!(607.value(), day13_1("day13").value());
-    }
-    #[test]
-    #[ignore]
-    fn t2() {
-        let ans = ".##..###..####.#....###..####.####.#....\n#..#.#..#....#.#....#..#.#.......#.#....\n#....#..#...#..#....#..#.###....#..#....\n#....###...#...#....###..#.....#...#....\n#..#.#....#....#....#....#....#....#....\n.##..#....####.####.#....#....####.####.\n";
-        assert_eq_dbgfmt!(ans.value(), day13_2("day13").value());
-    }
-}
