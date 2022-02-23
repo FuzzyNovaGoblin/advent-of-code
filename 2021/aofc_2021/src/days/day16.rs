@@ -2,7 +2,6 @@ use std::{collections::VecDeque, fs};
 
 use self::buildable_number::BuildableNumber;
 
-
 #[derive(Debug, Clone)]
 enum PacketVal {
     #[allow(dead_code)]
@@ -11,24 +10,52 @@ enum PacketVal {
     SubPackets(Vec<Packet>),
 }
 
+impl PacketVal {
+    fn eval(&self, type_id: u8) -> u64 {
+        match self {
+            PacketVal::None => unreachable!(),
+            PacketVal::Literal(val) => *val,
+            PacketVal::SubPackets(packs) => match type_id {
+                0 => packs.iter().fold(0, |f, val| f + val.eval()),
+                1 => packs.iter().fold(1, |f, val| f * val.eval()),
+                2 => packs
+                    .iter()
+                    .skip(1)
+                    .fold(packs[0].eval(), |fold_val, val| fold_val.min(val.eval())),
+                3 => packs
+                    .iter()
+                    .skip(1)
+                    .fold(packs[0].eval(), |fold_val, val| fold_val.max(val.eval())),
+                5 => (packs[0].eval() > packs[1].eval()) as u64,
+                6 => (packs[0].eval() < packs[1].eval()) as u64,
+                7 => (packs[0].eval() == packs[1].eval()) as u64,
+
+                _ => unreachable!(),
+            },
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
 struct Packet {
-    pub version_id: u8,
     pub type_id: u8,
+    pub version_id: u8,
     pub val: PacketVal,
 }
 
 impl Packet {
     fn new(version_id: u8, type_id: u8, val: PacketVal) -> Self {
         Self {
-            version_id,
             type_id,
+            version_id,
             val,
         }
     }
 
-    // fn eval()
+    fn eval(&self) -> u64 {
+        self.val.eval(self.type_id)
+    }
 }
 
 struct IteratorPacketBuilder {
@@ -91,9 +118,7 @@ impl IteratorPacketBuilder {
     }
 }
 
-
-
-impl From<IteratorPacketBuilder> for VecDeque<u8>{
+impl From<IteratorPacketBuilder> for VecDeque<u8> {
     fn from(other: IteratorPacketBuilder) -> Self {
         other.bits
     }
@@ -115,82 +140,6 @@ impl Iterator for IteratorPacketBuilder {
     }
 }
 
-pub fn day16_1(file_name: &str) -> impl crate::AnsType {
-    let input_file = format!(
-        "{}/aofc_2021/input/{}",
-        env!("ADVENT_OF_CODE_2021"),
-        file_name
-    );
-
-    let packets = IteratorPacketBuilder::new(
-        fs::read_to_string(input_file)
-            .unwrap()
-            .split("")
-            .filter_map(|c| match u8::from_str_radix(c, 16) {
-                Ok(v) => Some(format!("{:04b}", v)),
-                Err(_) => None,
-            })
-            .fold("".into(), |built, this| format!("{}{}", built, this))
-            .split("")
-            .filter_map(|c| match u8::from_str_radix(c, 2) {
-                Ok(v) => Some(v),
-                Err(_) => None,
-            })
-            .collect::<VecDeque<_>>(),
-    )
-    .collect::<Vec<Packet>>();
-
-    rec_get_sum(packets)
-}
-
-fn rec_get_sum(packs: Vec<Packet>) -> u32 {
-    let mut sum = 0;
-    for packet in &packs {
-        sum += match &packet.val {
-            PacketVal::None => panic!("why is this happening?"),
-            PacketVal::Literal(_) => packet.version_id as u32,
-            PacketVal::SubPackets(subs) => packet.version_id as u32 + rec_get_sum(subs.clone()),
-        };
-    }
-    // let mut it = packs.iter().peekable();
-    //          print!("[");
-    // while let Some(pack) = it.next() {
-    //     print!("{:?}", pack);
-    //     if it.peek().is_some() {
-    //         print!(", ");
-    //     }
-    //     else{
-    //          print!("]");
-    //     }
-    // }
-    sum
-}
-
-pub fn day16_2(file_name: &str) -> impl crate::AnsType {
-    let input_file = format!(
-        "{}/aofc_2021/input/{}",
-        env!("ADVENT_OF_CODE_2021"),
-        file_name
-    );
-    let _data = fs::read_to_string(input_file);
-    todo!()
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-    use crate::assert_eq_ansval;
-
-    #[test]
-    fn t1() {
-        assert_eq_ansval!(1012, day16_1("day16"));
-    }
-    #[test]
-    #[ignore]
-    fn t2() {
-        assert_eq_ansval!((), day16_2("test"));
-    }
-}
 
 mod buildable_number {
 
@@ -223,4 +172,88 @@ mod buildable_number {
     }
 
     impl_buildable_number!(u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128);
+}
+
+
+pub fn day16_1(file_name: &str) -> impl crate::AnsType {
+    let input_file = format!(
+        "{}/aofc_2021/input/{}",
+        env!("ADVENT_OF_CODE_2021"),
+        file_name
+    );
+
+    let packets = IteratorPacketBuilder::new(
+        fs::read_to_string(input_file)
+            .unwrap()
+            .split("")
+            .filter_map(|c| match u8::from_str_radix(c, 16) {
+                Ok(v) => Some(format!("{:04b}", v)),
+                Err(_) => None,
+            })
+            .fold("".into(), |built, this| format!("{}{}", built, this))
+            .split("")
+            .filter_map(|c| match u8::from_str_radix(c, 2) {
+                Ok(v) => Some(v),
+                Err(_) => None,
+            })
+            .collect::<VecDeque<_>>(),
+    )
+    .collect::<Vec<Packet>>();
+
+    rec_get_sum(packets)
+}
+
+
+pub fn day16_2(file_name: &str) -> impl crate::AnsType {
+    let input_file = format!(
+        "{}/aofc_2021/input/{}",
+        env!("ADVENT_OF_CODE_2021"),
+        file_name
+    );
+     let packets = IteratorPacketBuilder::new(
+        fs::read_to_string(input_file)
+            .unwrap()
+            .split("")
+            .filter_map(|c| match u8::from_str_radix(c, 16) {
+                Ok(v) => Some(format!("{:04b}", v)),
+                Err(_) => None,
+            })
+            .fold("".into(), |built, this| format!("{}{}", built, this))
+            .split("")
+            .filter_map(|c| match u8::from_str_radix(c, 2) {
+                Ok(v) => Some(v),
+                Err(_) => None,
+            })
+            .collect::<VecDeque<_>>(),
+    ).collect::<Vec<_>>();
+
+
+    packets[0].eval()
+}
+
+fn rec_get_sum(packs: Vec<Packet>) -> u32 {
+    let mut sum = 0;
+    for packet in &packs {
+        sum += match &packet.val {
+            PacketVal::None => panic!("why is this happening?"),
+            PacketVal::Literal(_) => packet.version_id as u32,
+            PacketVal::SubPackets(subs) => packet.version_id as u32 + rec_get_sum(subs.clone()),
+        };
+    }
+    sum
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::assert_eq_ansval;
+
+    #[test]
+    fn t1() {
+        assert_eq_ansval!(1012, day16_1("day16"));
+    }
+    #[test]
+    fn t2() {
+        assert_eq_ansval!(2223947372407_usize, day16_2("day16"));
+    }
 }
