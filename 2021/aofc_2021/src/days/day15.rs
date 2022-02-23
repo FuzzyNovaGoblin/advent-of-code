@@ -64,7 +64,7 @@ pub fn day15_1(file_name: &str) -> impl AnsType {
 
     distance_map.insert((0, 0), Distance(0));
 
-    for (y, line) in _data.unwrap().split("\n").enumerate() {
+    for (y, line) in _data.unwrap().split('\n').enumerate() {
         for (x, char) in line.chars().enumerate() {
             point_map[(x, y)] = char.to_digit(10).unwrap();
         }
@@ -88,7 +88,7 @@ pub fn day15_1(file_name: &str) -> impl AnsType {
             break;
         }
 
-        for next_point in point_map.get_boardering_points(current_point, 0b_010_101_010) {
+        for next_point in point_map.get_boardering_points(current_point, 0b0_1010_1010) {
             let distance = point_map[next_point];
             let new_distance = current_distance + distance;
             if &new_distance < distance_map.entry(next_point).or_default() {
@@ -98,7 +98,7 @@ pub fn day15_1(file_name: &str) -> impl AnsType {
         }
     }
 
-    distance_map[&last_point].clone()
+    distance_map[&last_point]
 }
 
 pub fn day15_2(file_name: &str) -> impl AnsType {
@@ -115,7 +115,7 @@ pub fn day15_2(file_name: &str) -> impl AnsType {
 
     distance_map.insert((0, 0), Distance(0));
 
-    for (y, line) in _data.unwrap().split("\n").enumerate() {
+    for (y, line) in _data.unwrap().split('\n').enumerate() {
         for (x, char) in line.chars().enumerate() {
             point_map[(x, y)] = char.to_digit(10).unwrap();
         }
@@ -161,7 +161,7 @@ pub fn day15_2(file_name: &str) -> impl AnsType {
             break;
         }
 
-        for next_point in point_map.get_boardering_points(current_point, 0b_010_101_010) {
+        for next_point in point_map.get_boardering_points(current_point, 0b0_1010_1010) {
             let distance = point_map[next_point];
             let new_distance = current_distance + distance;
             if &new_distance < distance_map.entry(next_point).or_default() {
@@ -171,7 +171,7 @@ pub fn day15_2(file_name: &str) -> impl AnsType {
         }
     }
 
-    distance_map[&last_point].clone()
+    distance_map[&last_point]
 }
 
 #[cfg(test)]

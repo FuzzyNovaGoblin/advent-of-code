@@ -25,7 +25,7 @@ pub fn day14_1(file_name: &str) -> impl crate::AnsType  {
         (
             both[0].chars().collect::<Vec<char>>(),
             both[1]
-                .split("\n")
+                .split('\n')
                 .map(|line| {
                     let parts = line.split(" -> ").collect::<Vec<_>>();
                     let f_part = parts[0].chars().collect::<Vec<_>>();
@@ -43,12 +43,10 @@ pub fn day14_1(file_name: &str) -> impl crate::AnsType  {
     }
 
     for _ in 0..10 {
-        let mut next_code = Vec::new();
-        next_code.push(data_code[0]);
+        let mut next_code = vec![data_code[0]];
         for c in data_code
-            .iter()
-            .map(|c| *c)
-            .zip(data_code.iter().skip(1).map(|c| *c))
+            .iter().copied()
+            .zip(data_code.iter().skip(1).copied())
         {
             next_code.push(pair_conversion[&c]);
             let e = char_counts.entry(pair_conversion[&c]).or_default();
@@ -83,13 +81,14 @@ pub fn day14_1(file_name: &str) -> impl crate::AnsType  {
             .1
 }
 
+type AtomicFinalConversion = Arc<Mutex<HashMap<(u8, (char, char)), HashMap<char, usize>>>>;
+
 fn rec_get_conversion(
     pair: (char, char),
     depth: u8,
     max_depth: u8,
-    // char_counts: Rc<RefCell<HashMap<char, usize>>>,
     pair_conversion: Arc<HashMap<(char, char), char>>,
-    final_conversions: Arc<Mutex<HashMap<(u8, (char, char)), HashMap<char, usize>>>>,
+    final_conversions: AtomicFinalConversion,
 ) -> HashMap<char, usize> {
     if depth >= max_depth {
         return default();
@@ -180,7 +179,7 @@ pub fn day14_2(file_name: &str) -> impl crate::AnsType  {
         (
             both[0].chars().collect::<Vec<char>>(),
             both[1]
-                .split("\n")
+                .split('\n')
                 .map(|line| {
                     let parts = line.split(" -> ").collect::<Vec<_>>();
                     let f_part = parts[0].chars().collect::<Vec<_>>();
@@ -205,7 +204,7 @@ pub fn day14_2(file_name: &str) -> impl crate::AnsType  {
     for c in data_code
         .iter()
         .copied()
-        .zip(data_code.clone().iter().skip(1).map(|c| *c))
+        .zip(data_code.clone().iter().skip(1).copied())
     {
         let pair_conversion = pair_conversion.clone();
         let final_conversions = final_conversions.clone();

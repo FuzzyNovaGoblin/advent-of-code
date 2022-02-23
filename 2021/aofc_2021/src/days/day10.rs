@@ -1,10 +1,7 @@
 use std::{collections::VecDeque, fs};
 
 fn is_opening_char(c: char) -> bool {
-    match c {
-        '{' | '[' | '(' | '<' => true,
-        _ => false,
-    }
+    matches!(c, '{' | '[' | '(' | '<' )
 }
 
 fn get_matching_char(c: char) -> char {
@@ -43,7 +40,7 @@ fn get_compeltion_char_points(c: char) -> u128 {
 pub fn day10_1 (file_name: &str)->  impl crate::AnsType{
 	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let _data = fs::read_to_string(input_file).unwrap();
-    let lines = _data.split("\n");
+    let lines = _data.split('\n');
 
     let mut error_points = 0;
     for line in lines {
@@ -51,10 +48,8 @@ pub fn day10_1 (file_name: &str)->  impl crate::AnsType{
         for c in line.chars() {
             if is_opening_char(c) {
                 opening_chars.push_front(c);
-            } else {
-                if c != get_matching_char(opening_chars.pop_front().unwrap()) {
-                    error_points += get_error_char_points(c);
-                }
+            } else if c != get_matching_char(opening_chars.pop_front().unwrap()) {
+                error_points += get_error_char_points(c);
             }
         }
     }
@@ -64,7 +59,7 @@ pub fn day10_1 (file_name: &str)->  impl crate::AnsType{
 pub fn day10_2 (file_name: &str)->  impl crate::AnsType{
 	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let _data = fs::read_to_string(input_file).unwrap();
-    let lines = _data.split("\n");
+    let lines = _data.split('\n');
 
     let mut did_error;
     let mut scores = vec![];
@@ -75,11 +70,9 @@ pub fn day10_2 (file_name: &str)->  impl crate::AnsType{
         for c in line.chars() {
             if is_opening_char(c) {
                 opening_chars.push_front(c);
-            } else {
-                if c != get_matching_char(opening_chars.pop_front().unwrap()) {
-                    did_error = true;
-                    break;
-                }
+            } else if c != get_matching_char(opening_chars.pop_front().unwrap()) {
+                did_error = true;
+                break;
             }
         }
         if !did_error {
@@ -90,6 +83,6 @@ pub fn day10_2 (file_name: &str)->  impl crate::AnsType{
             scores.push(score);
         }
     }
-    scores.sort();
+    scores.sort_unstable();
     scores[scores.len() / 2]
 }

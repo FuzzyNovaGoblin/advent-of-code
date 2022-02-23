@@ -54,7 +54,7 @@ pub fn day1_1(file_name: &str) -> impl AnsType{
      let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let data = fs::read_to_string(input_file)
         .expect("couldn't read in file")
-        .split("\n")
+        .split('\n')
         .map(|s| s.parse::<i64>())
         .filter(|r| r.is_ok())
         .map(|r| r.unwrap())
@@ -76,7 +76,7 @@ pub fn day1_2 (file_name: &str)->  impl crate::AnsType{
 
     let data = fs::read_to_string(input_file)
         .unwrap()
-        .split("\n")
+        .split('\n')
         .filter_map(|s| s.parse::<i64>().ok())
         .collect::<Vec<_>>();
     let mut first_lap = true;

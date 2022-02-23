@@ -27,7 +27,7 @@ impl<'a> Graph<'a> {
             path_string.push_str("end");
             return vec![path_string];
         } else {
-            path_string.push_str(&next_node.0);
+            path_string.push_str(next_node.0);
             path_string.push(',');
         }
         if next_node.0.chars().next().unwrap().is_lowercase() {
@@ -52,7 +52,7 @@ impl<'a> Graph<'a> {
             }
 
             self.find_paths(
-                new_node.clone(),
+                *new_node,
                 path_string.clone(),
                 been_to.clone(),
                 used_double,
@@ -74,7 +74,7 @@ impl<'a> Graph<'a> {
             path_string.push_str("end");
             return vec![path_string];
         } else {
-            path_string.push_str(&next_node.0);
+            path_string.push_str(next_node.0);
             path_string.push(',');
         }
         if next_node.0.chars().next().unwrap().is_lowercase() {
@@ -88,7 +88,7 @@ impl<'a> Graph<'a> {
                 continue;
             }
 
-            self.find_paths_part1(new_node.clone(), path_string.clone(), been_to.clone())
+            self.find_paths_part1(*new_node, path_string.clone(), been_to.clone())
                 .into_iter()
                 .for_each(|v| ret_vec.push(v));
         }
@@ -105,12 +105,12 @@ pub fn day12_1(file_name: &str) -> usize {
     );
     let _data = fs::read_to_string(input_file).unwrap();
     let mut data = Graph::default();
-    for line in _data.split("\n") {
-        let split_line = line.split("-").collect::<Vec<&str>>();
-        data.add_connection(Node(split_line[0].into()), Node(split_line[1].into()));
-        data.add_connection(Node(split_line[1].into()), Node(split_line[0].into()));
+    for line in _data.split('\n') {
+        let split_line = line.split('-').collect::<Vec<&str>>();
+        data.add_connection(Node(split_line[0]), Node(split_line[1]));
+        data.add_connection(Node(split_line[1]), Node(split_line[0]));
     }
-    let paths = data.find_paths_part1(Node("start".into()), "".into(), Default::default());
+    let paths = data.find_paths_part1(Node("start"), "".into(), Default::default());
     paths.len()
 }
 
@@ -122,14 +122,14 @@ pub fn day12_2(file_name: &str) -> usize {
     );
     let _data = fs::read_to_string(input_file).unwrap();
     let mut data = Graph::default();
-    for line in _data.split("\n") {
-        let split_line = line.split("-").collect::<Vec<&str>>();
-        data.add_connection(Node(split_line[0].into()), Node(split_line[1].into()));
-        data.add_connection(Node(split_line[1].into()), Node(split_line[0].into()));
+    for line in _data.split('\n') {
+        let split_line = line.split('-').collect::<Vec<&str>>();
+        data.add_connection(Node(split_line[0]), Node(split_line[1]));
+        data.add_connection(Node(split_line[1]), Node(split_line[0]));
     }
     let mut been_to = HashMap::new();
     been_to.insert(Node("start"), 2);
-    let paths = data.find_paths(Node("start".into()), "".into(), been_to, false);
+    let paths = data.find_paths(Node("start"), "".into(), been_to, false);
     paths.len()
 }
 

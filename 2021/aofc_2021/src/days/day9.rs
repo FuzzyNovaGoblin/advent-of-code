@@ -33,9 +33,7 @@ where
         }
         println!(
             "{}",
-            std::iter::repeat("*")
-                .take(self.points.len() + 4)
-                .collect::<String>()
+            "*".repeat(self.points.len() + 4)
         );
         for y in 0..self.points[0].len() {
             print!("**");
@@ -46,9 +44,7 @@ where
         }
         println!(
             "{}",
-            std::iter::repeat("*")
-                .take(self.points.len() + 4)
-                .collect::<String>()
+            "*".repeat(self.points.len() + 4)
         );
     }
 
@@ -160,7 +156,7 @@ pub fn day9_1 (file_name: &str)->  impl crate::AnsType{
 	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let _data = fs::read_to_string(input_file).unwrap();
     let mut point_map = PointMap::default();
-    for (y, line) in _data.split("\n").enumerate() {
+    for (y, line) in _data.split('\n').enumerate() {
         for (x, val) in line.chars().map(|c| c.to_digit(10).unwrap()).enumerate() {
             point_map[(x, y)] = val;
         }
@@ -193,7 +189,7 @@ pub fn day9_2 (file_name: &str)->  impl crate::AnsType{
 	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let _data = fs::read_to_string(input_file).unwrap();
     let mut point_map = PointMap::default();
-    for (y, line) in _data.split("\n").enumerate() {
+    for (y, line) in _data.split('\n').enumerate() {
         for (x, val) in line.chars().map(|c| c.to_digit(10).unwrap()).enumerate() {
             point_map[(x, y)] = val;
         }
@@ -220,7 +216,7 @@ pub fn day9_2 (file_name: &str)->  impl crate::AnsType{
     for point in low_points {
         basins.push(point_map.get_basin(Default::default(), point).len());
     }
-    basins.sort();
+    basins.sort_unstable();
     basins.reverse();
-    basins.iter().take(3).fold(1, |init, v| init * v)
+    basins.iter().take(3).product::<usize>()
 }

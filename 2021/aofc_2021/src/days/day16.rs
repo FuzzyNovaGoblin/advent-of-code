@@ -2,14 +2,17 @@ use std::{collections::VecDeque, fs};
 
 use self::buildable_number::BuildableNumber;
 
+
 #[derive(Debug, Clone)]
 enum PacketVal {
+    #[allow(dead_code)]
     None,
     Literal(u64),
     SubPackets(Vec<Packet>),
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 struct Packet {
     pub version_id: u8,
     pub type_id: u8,
@@ -88,9 +91,11 @@ impl IteratorPacketBuilder {
     }
 }
 
-impl Into<VecDeque<u8>> for IteratorPacketBuilder {
-    fn into(self) -> VecDeque<u8> {
-        self.bits
+
+
+impl From<IteratorPacketBuilder> for VecDeque<u8>{
+    fn from(other: IteratorPacketBuilder) -> Self {
+        other.bits
     }
 }
 

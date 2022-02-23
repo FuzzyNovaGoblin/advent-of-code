@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use std::fs;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 struct Board {
     played_set: HashSet<u8>,
     contained_pices: HashMap<u8, (usize, usize)>,
@@ -12,29 +12,20 @@ struct Board {
     completed: bool,
 }
 
-impl Default for Board {
-    fn default() -> Self {
-        Self {
-            played_set: Default::default(),
-            contained_pices: HashMap::<u8, (usize, usize)>::new(),
-            col: Default::default(),
-            row: Default::default(),
-            initial_str: Default::default(),
-            completed: false,
-        }
-    }
-}
 
 impl Board {
     fn from_str<T>(str_data: T) -> Board
     where
         T: AsRef<str>,
     {
-        let mut ret_baord = Board::default();
-        ret_baord.initial_str = str_data.as_ref().to_owned();
-        for (r, row_str) in str_data.as_ref().split("\n").enumerate() {
+        let mut ret_baord = Board {
+            initial_str: str_data.as_ref().to_owned(),
+            ..Board::default()
+        };
+
+        for (r, row_str) in str_data.as_ref().split('\n').enumerate() {
             for (c, num) in row_str
-                .split(" ")
+                .split(' ')
                 .filter_map(|v| v.parse::<u8>().ok())
                 .enumerate()
             {
@@ -62,12 +53,16 @@ impl Board {
     }
 }
 
-pub fn day4_1 (file_name: &str)->  impl crate::AnsType{
-	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
+pub fn day4_1(file_name: &str) -> impl crate::AnsType {
+    let input_file = format!(
+        "{}/aofc_2021/input/{}",
+        env!("ADVENT_OF_CODE_2021"),
+        file_name
+    );
     let data = fs::read_to_string(input_file).unwrap();
     let data = data.split("\n\n").collect::<Vec<_>>();
-    let moves = data[0].split(",").filter_map(|v| v.parse::<u8>().ok());
-    let mut boards: Vec<Board> = data.iter().skip(1).map(|v| Board::from_str(v)).collect();
+    let moves = data[0].split(',').filter_map(|v| v.parse::<u8>().ok());
+    let mut boards: Vec<Board> = data.iter().skip(1).map(Board::from_str).collect();
 
     let (winning_board, last_num) = {
         let mut ret_val = (0, 0);
@@ -98,12 +93,16 @@ pub fn day4_1 (file_name: &str)->  impl crate::AnsType{
         * last_num as usize
 }
 
-pub fn day4_2 (file_name: &str)->  impl crate::AnsType{
-	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
+pub fn day4_2(file_name: &str) -> impl crate::AnsType {
+    let input_file = format!(
+        "{}/aofc_2021/input/{}",
+        env!("ADVENT_OF_CODE_2021"),
+        file_name
+    );
     let data = fs::read_to_string(input_file).unwrap();
     let data = data.split("\n\n").collect::<Vec<_>>();
-    let moves = data[0].split(",").filter_map(|v| v.parse::<u8>().ok());
-    let mut boards: Vec<Board> = data.iter().skip(1).map(|v| Board::from_str(v)).collect();
+    let moves = data[0].split(',').filter_map(|v| v.parse::<u8>().ok());
+    let mut boards: Vec<Board> = data.iter().skip(1).map(Board::from_str).collect();
 
     let mut winning_board = 0;
     let mut last_num = 0;

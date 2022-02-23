@@ -47,7 +47,7 @@ impl Data {
                 return *val;
             }
         }
-        return 10;
+        10
     }
 }
 
@@ -60,11 +60,11 @@ pub fn day8_1(file_name: &str) -> impl crate::AnsType {
     let _data = fs::read_to_string(input_file);
     let data = _data
         .unwrap()
-        .split("\n")
+        .split('\n')
         .map(|line| {
             let mut i_and_o = line
                 .split(" | ")
-                .map(|part| part.split(" ").map(|s| s.to_owned()).collect())
+                .map(|part| part.split(' ').map(|s| s.to_owned()).collect())
                 .collect::<Vec<_>>();
             let (o, i) = (i_and_o.pop().unwrap(), i_and_o.pop().unwrap());
             Data::new(i, o)
@@ -91,11 +91,11 @@ pub fn day8_2(file_name: &str) -> impl crate::AnsType {
     let _data = fs::read_to_string(input_file);
     let mut data = _data
         .unwrap()
-        .split("\n")
+        .split('\n')
         .map(|line| {
             let mut i_and_o = line
                 .split(" | ")
-                .map(|part| part.split(" ").map(|s| s.to_owned()).collect())
+                .map(|part| part.split(' ').map(|s| s.to_owned()).collect())
                 .collect::<Vec<_>>();
             let (o, i) = (i_and_o.pop().unwrap(), i_and_o.pop().unwrap());
             Data::new(i, o)
@@ -114,7 +114,7 @@ pub fn day8_2(file_name: &str) -> impl crate::AnsType {
             };
 
             for c in i.iter() {
-                data_line.num_map.entry(key).or_insert(Default::default());
+                data_line.num_map.entry(key).or_insert_with(Default::default);
                 data_line.num_map.get_mut(&key).unwrap().insert(*c);
             }
         }
@@ -176,8 +176,7 @@ pub fn day8_2(file_name: &str) -> impl crate::AnsType {
             let tmp = data_line
                 .wire_map
                 .values()
-                .into_iter()
-                .map(|c| *c)
+                .into_iter().copied()
                 .collect::<HashSet<_>>();
 
             let e_and_g = data_line.num_map[&8]

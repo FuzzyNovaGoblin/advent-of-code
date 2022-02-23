@@ -23,7 +23,7 @@ pub fn day7_1 (file_name: &str)->  impl crate::AnsType{
     let _data = fs::read_to_string(input_file);
     let data: Vec<_> = _data
         .unwrap()
-        .split(",")
+        .split(',')
         .map(|s| s.parse::<i64>().unwrap())
         .collect();
 
@@ -42,7 +42,7 @@ pub fn day7_2 (file_name: &str)->  impl crate::AnsType{
 
       let data: Vec<_> = _data
         .unwrap()
-        .split(",")
+        .split(',')
         .map(|s| s.parse::<i64>().unwrap())
         .collect();
 

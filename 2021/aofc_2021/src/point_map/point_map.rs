@@ -1,10 +1,10 @@
-#![allow(dead_code)]
+
 use std::{
     fmt::{Debug, Display},
     ops,
 };
 
-use crate::point_map::DimentionIter;
+
 
 pub type CordPoint = (usize, usize);
 
@@ -127,6 +127,10 @@ where
         let d = self.get_dimentions();
         d.0 * d.1
     }
+
+    pub fn is_empty(&self) -> bool{
+        self.len() == 0
+    }
 }
 
 impl<T> PointMap<T> {
@@ -166,7 +170,7 @@ where
             "PointMap {{\n\tdimentions: {:?},\n\tmap:\n{}\n}}",
             self.get_dimentions(),
             format!("{}", self)
-                .split("\n")
+                .split('\n')
                 .map(|s| format!("\t     {}\n", s))
                 .collect::<String>()
         )
@@ -187,9 +191,7 @@ where
             write!(
                 f,
                 "{}",
-                std::iter::repeat("*")
-                    .take(self.points.len() * (max_size + 1) + 4)
-                    .collect::<String>()
+                "*".repeat(self.points.len() * (max_size + 1) + 4)
             )
         };
 

@@ -22,8 +22,8 @@ pub fn day2_1 (file_name: &str)->  impl crate::AnsType{
 	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
 
     let data = fs::read_to_string(input_file).unwrap();
-    let data = data.split("\n").filter_map(|s| {
-        let splt_data = s.split(" ").collect::<Vec<_>>();
+    let data = data.split('\n').filter_map(|s| {
+        let splt_data = s.split(' ').collect::<Vec<_>>();
         let udata = splt_data[1].parse::<i32>();
         match udata {
             Ok(v) => Some(Directrion::new(splt_data[0], v)),
@@ -45,8 +45,8 @@ pub fn day2_1 (file_name: &str)->  impl crate::AnsType{
 pub fn day2_2 (file_name: &str)->  impl crate::AnsType{
 	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let data = fs::read_to_string(input_file).unwrap();
-    let data = data.split("\n").filter_map(|s| {
-        let splt_data = s.split(" ").collect::<Vec<_>>();
+    let data = data.split('\n').filter_map(|s| {
+        let splt_data = s.split(' ').collect::<Vec<_>>();
         let udata = splt_data[1].parse::<i32>();
         match udata {
             Ok(v) => Some(Directrion::new(splt_data[0], v)),

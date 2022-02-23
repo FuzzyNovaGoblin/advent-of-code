@@ -29,7 +29,7 @@ impl PointMap {
                 row.push(0);
             }
         }
-        println!("{}", std::iter::repeat("*").take(self.points.len()+4).collect::<String>());
+        println!("{}", "*".repeat(self.points.len()+4));
         for y in 0..self.points[0].len() {
             print!("**");
             for x in 0..self.points.len() {
@@ -37,7 +37,7 @@ impl PointMap {
             }
             println!("**");
         }
-        println!("{}", std::iter::repeat("*").take(self.points.len()+4).collect::<String>());
+        println!("{}", "*".repeat(self.points.len()+4));
     }
 }
 
@@ -56,7 +56,7 @@ impl Iterator for PointMapIterator {
             self.y = 0;
             self.x += 1;
         }
-        while self.x < self.map.points.len() && self.map.points[self.x].len() < 1 {
+        while self.x < self.map.points.len() && self.map.points[self.x].is_empty() {
             self.x += 1;
         }
         if self.x >= self.map.points.len() {
@@ -102,21 +102,19 @@ pub fn day5_1 (file_name: &str)->  impl crate::AnsType{
 	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let data = fs::read_to_string(input_file).unwrap();
     let paths = data
-        .split("\n")
+        .split('\n')
         .map(|line| {
             line.split(" -> ")
                 .map(|half_line| {
                     half_line
-                        .split(",")
+                        .split(',')
                         .filter_map(|num_str| num_str.parse::<u32>().ok())
                         .collect::<Vec<u32>>()
                 })
                 .collect::<Vec<_>>()
-        })
-        .collect::<Vec<_>>();
+        });
 
     let paths = paths
-        .into_iter()
         .filter(|line| line[0][0] == line[1][0] || line[0][1] == line[1][1])
         .collect::<Vec<_>>();
 
@@ -150,12 +148,12 @@ pub fn day5_2 (file_name: &str)->  impl crate::AnsType{
 	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let data = fs::read_to_string(input_file).unwrap();
     let paths = data
-        .split("\n")
+        .split('\n')
         .map(|line| {
             line.split(" -> ")
                 .map(|half_line| {
                     half_line
-                        .split(",")
+                        .split(',')
                         .filter_map(|num_str| num_str.parse::<u32>().ok())
                         .collect::<Vec<u32>>()
                 })

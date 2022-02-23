@@ -1,5 +1,5 @@
-pub mod point_map;
-pub use point_map::{PointMap, CordPoint};
-
+#![allow(dead_code)]
+#![allow(clippy::unusual_byte_groupings)]
+include!("./point_map.rs");
 pub mod iterator;
 pub use iterator::DimentionIter;

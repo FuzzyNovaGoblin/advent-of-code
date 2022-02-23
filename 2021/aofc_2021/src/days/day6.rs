@@ -71,24 +71,19 @@ pub fn day6_1 (file_name: &str)->  impl crate::AnsType{
 	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let _data = fs::read_to_string(input_file).unwrap();
     let data = _data
-        .split(",")
+        .split(',')
         .map(|stringval| stringval.parse().unwrap())
         .collect::<Vec<u32>>();
 
-    let lantern_fish_iter = LanternFishPopulationIter::new(data);
-
-    lantern_fish_iter.skip(80 - 1).next().unwrap()
+     LanternFishPopulationIter::new(data).nth(80 - 1).unwrap()
 }
 
 pub fn day6_2 (file_name: &str)->  impl crate::AnsType{
 	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
     let _data = fs::read_to_string(input_file);
         let data = _data.unwrap()
-        .split(",")
+        .split(',')
         .map(|stringval| stringval.parse().unwrap())
         .collect::<Vec<u32>>();
-        let lantern_fish = LanternFishPopulation::from(data);
-
-
-        lantern_fish.skip(256 - 1).next().unwrap()
+        LanternFishPopulation::from(data).nth(256 - 1).unwrap()
 }

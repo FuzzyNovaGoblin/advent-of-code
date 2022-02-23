@@ -48,7 +48,7 @@ mod fold_map {
                         }
                     )?;
                 }
-                write!(f, "\n")?;
+                writeln!(f)?;
             }
             Ok(())
         }
@@ -150,20 +150,20 @@ pub fn day13_1(file_name: &str) -> impl AnsType {
 
         (
             both[0]
-                .split("\n")
+                .split('\n')
                 .map(|line| -> CordPoint {
                     let x_and_y = line
-                        .split(",")
+                        .split(',')
                         .map(|v| v.parse::<usize>().unwrap())
                         .collect::<Vec<_>>();
                     (x_and_y[0], x_and_y[1])
                 })
                 .collect::<Vec<_>>(),
             both[1]
-                .split("\n")
+                .split('\n')
                 .map(|line| {
-                    let parts = line.split("=").collect::<Vec<_>>();
-                    if parts[0].chars().last().unwrap() == 'x' {
+                    let parts = line.split('=').collect::<Vec<_>>();
+                    if parts[0].ends_with('x') {
                         SplitDirection::X(parts[1].parse().unwrap())
                     } else {
                         SplitDirection::Y(parts[1].parse().unwrap())
@@ -173,12 +173,11 @@ pub fn day13_1(file_name: &str) -> impl AnsType {
         )
     };
     let mut fold_map = FoldMap::new(point_data);
-    for instruction in split_data {
+    if let Some(instruction) = split_data.into_iter().next() {
         match instruction {
             SplitDirection::X(v) => fold_map.fold_h(v),
             SplitDirection::Y(v) => fold_map.fold_v(v),
         }
-        break;
     }
     fold_map
         .into_iter()
@@ -200,20 +199,20 @@ pub fn day13_2(file_name: &str) -> impl AnsType {
 
         (
             both[0]
-                .split("\n")
+                .split('\n')
                 .map(|line| -> CordPoint {
                     let x_and_y = line
-                        .split(",")
+                        .split(',')
                         .map(|v| v.parse::<usize>().unwrap())
                         .collect::<Vec<_>>();
                     (x_and_y[0], x_and_y[1])
                 })
                 .collect::<Vec<_>>(),
             both[1]
-                .split("\n")
+                .split('\n')
                 .map(|line| {
-                    let parts = line.split("=").collect::<Vec<_>>();
-                    if parts[0].chars().last().unwrap() == 'x' {
+                    let parts = line.split('=').collect::<Vec<_>>();
+                    if parts[0].ends_with('x') {
                         SplitDirection::X(parts[1].parse().unwrap())
                     } else {
                         SplitDirection::Y(parts[1].parse().unwrap())
@@ -248,6 +247,6 @@ mod test {
     #[ignore]
     fn t2() {
         let ans = ".##..###..####.#....###..####.####.#....\n#..#.#..#....#.#....#..#.#.......#.#....\n#....#..#...#..#....#..#.###....#..#....\n#....###...#...#....###..#.....#...#....\n#..#.#....#....#....#....#....#....#....\n.##..#....####.####.#....#....####.####.\n";
-        assert_eq_dbgfmt!(ans.value(),  day13_2("day13").value());
+        assert_eq_dbgfmt!(ans.value(), day13_2("day13").value());
     }
 }

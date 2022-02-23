@@ -33,7 +33,7 @@ pub fn day11_1(file_name: &str) -> impl crate::AnsType {
     );
     let _data = fs::read_to_string(input_file);
     let mut point_map = PointMap::default();
-    for (y, line) in _data.unwrap().split("\n").enumerate() {
+    for (y, line) in _data.unwrap().split('\n').enumerate() {
         for (x, char) in line.chars().enumerate() {
             point_map[(x, y)] = char.to_digit(10).unwrap();
         }
@@ -84,7 +84,7 @@ pub fn day11_2(file_name: &str) -> impl crate::AnsType {
     );
     let _data = fs::read_to_string(input_file);
     let mut point_map = PointMap::default();
-    for (y, line) in _data.unwrap().split("\n").enumerate() {
+    for (y, line) in _data.unwrap().split('\n').enumerate() {
         for (x, char) in line.chars().enumerate() {
             point_map[(x, y)] = char.to_digit(10).unwrap();
         }
