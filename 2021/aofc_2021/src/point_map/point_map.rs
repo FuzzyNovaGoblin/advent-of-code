@@ -1,12 +1,21 @@
-
 use std::{
     fmt::{Debug, Display},
     ops,
 };
 
 
+#[derive(Default, Debug)]
+pub struct CordPoint{
+    pub x:i128,
+    pub y:i128
+}
 
-pub type CordPoint = (usize, usize);
+impl From<CordPointTuple> for CordPoint {
+    fn from(other: (usize, usize)) -> Self {
+        Self{x:other.0 as i128, y:other.1 as i128}
+    }
+}
+pub type CordPointTuple = (usize, usize);
 
 #[derive(Default, Clone)]
 pub struct PointMap<T> {
@@ -20,11 +29,11 @@ where
     pub fn from(points: Vec<Vec<T>>) -> Self {
         Self { points }
     }
-    pub fn get_boardering_points_with_center(&self, point: CordPoint) -> Vec<CordPoint> {
+    pub fn get_boardering_points_with_center(&self, point: CordPointTuple) -> Vec<CordPointTuple> {
         self.get_boardering_points(point, 0b_111_111_111)
     }
 
-    pub fn get_boardering_points(&self, (x, y): CordPoint, include_mask: u16) -> Vec<CordPoint> {
+    pub fn get_boardering_points(&self, (x, y): CordPointTuple, include_mask: u16) -> Vec<CordPointTuple> {
         let mut ret_points = vec![];
         // first layer
         if y > 0 {
@@ -134,7 +143,7 @@ where
 }
 
 impl<T> PointMap<T> {
-    pub fn get_dimentions(&self) -> CordPoint {
+    pub fn get_dimentions(&self) -> CordPointTuple {
         (
             self.points.len(),
             self.points.get(0).unwrap_or(&Vec::new()).len(),
@@ -210,19 +219,19 @@ where
     }
 }
 
-impl<T> ops::Index<CordPoint> for PointMap<T> {
+impl<T> ops::Index<CordPointTuple> for PointMap<T> {
     type Output = T;
 
-    fn index(&self, (x, y): CordPoint) -> &Self::Output {
+    fn index(&self, (x, y): CordPointTuple) -> &Self::Output {
         &self.points[x][y]
     }
 }
 
-impl<T> ops::IndexMut<CordPoint> for PointMap<T>
+impl<T> ops::IndexMut<CordPointTuple> for PointMap<T>
 where
     T: Display + Default + PartialOrd,
 {
-    fn index_mut(&mut self, (x, y): CordPoint) -> &mut Self::Output {
+    fn index_mut(&mut self, (x, y): CordPointTuple) -> &mut Self::Output {
         let (_, height) = self.get_dimentions();
         while x >= self.points.len() {
             self.points.push(Default::default());

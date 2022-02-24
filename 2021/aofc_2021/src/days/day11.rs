@@ -1,13 +1,13 @@
 use std::{cell::RefCell, fs, rc::Rc};
 
-use crate::point_map::{CordPoint, DimentionIter, PointMap};
+use crate::point_map::{CordPointTuple, DimentionIter, PointMap};
 
 impl PointMap<u32> {}
 
 fn handle_explosion(
     point_map: &mut PointMap<u32>,
-    start_point: CordPoint,
-    already_exploded: Rc<RefCell<Vec<CordPoint>>>,
+    start_point: CordPointTuple,
+    already_exploded: Rc<RefCell<Vec<CordPointTuple>>>,
     flashes: Rc<RefCell<u128>>,
 ) {
     {

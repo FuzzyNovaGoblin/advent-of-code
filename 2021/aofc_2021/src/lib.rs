@@ -85,8 +85,8 @@ pub trait AnsType {
     fn value(&self) -> String;
 }
 
-auto trait AnsNotDispaly {}
-impl !AnsNotDispaly for () {}
+auto trait AnsNotDisplay {}
+impl !AnsNotDisplay for () {}
 
 impl AnsType for () {
     fn value(&self) -> String {
@@ -94,7 +94,7 @@ impl AnsType for () {
     }
 }
 
-impl<T: Display + AnsNotDispaly> AnsType for T {
+impl<T: Display + AnsNotDisplay> AnsType for T {
     fn value(&self) -> String {
         format!("{}", self)
     }
@@ -136,22 +136,22 @@ mod tests{
     #[test]fn day15_2(){assert_eq_ansval!(3045, days::day15::day15_2("day15") );}
     #[test]fn day16_1(){assert_eq_ansval!(1012, days::day16::day16_1("day16") );}
     #[test]fn day16_2(){assert_eq_ansval!(2223947372407_usize, days::day16::day16_2("day16") );}
-    // #[test]fn day17_1(){assert_eq_ansval!((), days::day17::day17_1("day17") );}
-    // #[test]fn day17_2(){assert_eq_ansval!((), days::day17::day17_2("day17") );}
-    // #[test]fn day18_1(){assert_eq_ansval!((), days::day18::day18_1("day18") );}
-    // #[test]fn day18_2(){assert_eq_ansval!((), days::day18::day18_2("day18") );}
-    // #[test]fn day19_1(){assert_eq_ansval!((), days::day19::day19_1("day19") );}
-    // #[test]fn day19_2(){assert_eq_ansval!((), days::day19::day19_2("day19") );}
-    // #[test]fn day20_1(){assert_eq_ansval!((), days::day20::day20_1("day20") );}
-    // #[test]fn day20_2(){assert_eq_ansval!((), days::day20::day20_2("day20") );}
-    // #[test]fn day21_1(){assert_eq_ansval!((), days::day21::day21_1("day21") );}
-    // #[test]fn day21_2(){assert_eq_ansval!((), days::day21::day21_2("day21") );}
-    // #[test]fn day22_1(){assert_eq_ansval!((), days::day22::day22_1("day22") );}
-    // #[test]fn day22_2(){assert_eq_ansval!((), days::day22::day22_2("day22") );}
-    // #[test]fn day23_1(){assert_eq_ansval!((), days::day23::day23_1("day23") );}
-    // #[test]fn day23_2(){assert_eq_ansval!((), days::day23::day23_2("day23") );}
-    // #[test]fn day24_1(){assert_eq_ansval!((), days::day24::day24_1("day24") );}
-    // #[test]fn day24_2(){assert_eq_ansval!((), days::day24::day24_2("day24") );}
-    // #[test]fn day25_1(){assert_eq_ansval!((), days::day25::day25_1("day25") );}
-    // #[test]fn day25_2(){assert_eq_ansval!((), days::day25::day25_2("day25") );}
+    #[test]fn day17_1(){assert_eq_ansval!(4656, days::day17::day17_1("day17") );}
+    #[test]fn day17_2(){assert_eq_ansval!(1908, days::day17::day17_2("day17") );}
+    #[test] #[ignore]fn day18_1(){assert_eq_ansval!((), days::day18::day18_1("day18") );}
+    #[test] #[ignore]fn day18_2(){assert_eq_ansval!((), days::day18::day18_2("day18") );}
+    #[test] #[ignore]fn day19_1(){assert_eq_ansval!((), days::day19::day19_1("day19") );}
+    #[test] #[ignore]fn day19_2(){assert_eq_ansval!((), days::day19::day19_2("day19") );}
+    #[test] #[ignore]fn day20_1(){assert_eq_ansval!((), days::day20::day20_1("day20") );}
+    #[test] #[ignore]fn day20_2(){assert_eq_ansval!((), days::day20::day20_2("day20") );}
+    #[test] #[ignore]fn day21_1(){assert_eq_ansval!((), days::day21::day21_1("day21") );}
+    #[test] #[ignore]fn day21_2(){assert_eq_ansval!((), days::day21::day21_2("day21") );}
+    #[test] #[ignore]fn day22_1(){assert_eq_ansval!((), days::day22::day22_1("day22") );}
+    #[test] #[ignore]fn day22_2(){assert_eq_ansval!((), days::day22::day22_2("day22") );}
+    #[test] #[ignore]fn day23_1(){assert_eq_ansval!((), days::day23::day23_1("day23") );}
+    #[test] #[ignore]fn day23_2(){assert_eq_ansval!((), days::day23::day23_2("day23") );}
+    #[test] #[ignore]fn day24_1(){assert_eq_ansval!((), days::day24::day24_1("day24") );}
+    #[test] #[ignore]fn day24_2(){assert_eq_ansval!((), days::day24::day24_2("day24") );}
+    #[test] #[ignore]fn day25_1(){assert_eq_ansval!((), days::day25::day25_1("day25") );}
+    #[test] #[ignore]fn day25_2(){assert_eq_ansval!((), days::day25::day25_2("day25") );}
 }

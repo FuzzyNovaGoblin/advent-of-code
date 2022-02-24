@@ -105,6 +105,7 @@ impl IteratorPacketBuilder {
             1 => {
                 let num_of_sub_packets: usize = self.build_num(11)?;
                 let mut sub_iter = IteratorPacketBuilder::new(self.bits.drain(0..).collect());
+                #[allow(clippy::needless_borrow)]
                 let sub_packs = (&mut sub_iter).take(num_of_sub_packets).collect();
                 self.bits.append(&mut sub_iter.into());
                 Some(PacketVal::SubPackets(sub_packs))

@@ -2,7 +2,7 @@ use std::fs;
 
 use crate::{
     days::day13::fold_map::{FoldMap, MapFold, SplitDirection},
-    point_map::CordPoint,
+    point_map::CordPointTuple,
     AnsType,
 };
 
@@ -10,18 +10,18 @@ mod fold_map {
     use std::collections::HashMap;
     use std::{fmt, ops};
 
-    use crate::point_map::CordPoint;
+    use crate::point_map::CordPointTuple;
     use crate::AnsType;
 
     #[derive(Default)]
     pub struct FoldMap {
-        points: HashMap<CordPoint, bool>,
-        lowest_point: CordPoint,
-        greatest_point: CordPoint,
+        points: HashMap<CordPointTuple, bool>,
+        lowest_point: CordPointTuple,
+        greatest_point: CordPointTuple,
     }
 
     impl IntoIterator for FoldMap {
-        type Item = (CordPoint, bool);
+        type Item = (CordPointTuple, bool);
 
         type IntoIter = std::vec::IntoIter<Self::Item>;
 
@@ -61,7 +61,7 @@ mod fold_map {
     }
 
     impl FoldMap {
-        pub fn new(new_points: Vec<CordPoint>) -> Self {
+        pub fn new(new_points: Vec<CordPointTuple>) -> Self {
             let mut tmp = Self::default();
             for p in new_points {
                 tmp[p] = true;
@@ -75,15 +75,15 @@ mod fold_map {
         fn fold_v(&mut self, y_val: usize);
     }
 
-    impl ops::Index<CordPoint> for FoldMap {
+    impl ops::Index<CordPointTuple> for FoldMap {
         type Output = bool;
 
-        fn index(&self, index: CordPoint) -> &Self::Output {
+        fn index(&self, index: CordPointTuple) -> &Self::Output {
             &self.points[&index]
         }
     }
-    impl ops::IndexMut<CordPoint> for FoldMap {
-        fn index_mut(&mut self, index: CordPoint) -> &mut Self::Output {
+    impl ops::IndexMut<CordPointTuple> for FoldMap {
+        fn index_mut(&mut self, index: CordPointTuple) -> &mut Self::Output {
             if index.0 > self.greatest_point.0 {
                 self.greatest_point.0 = index.0
             }
@@ -151,7 +151,7 @@ pub fn day13_1(file_name: &str) -> impl AnsType {
         (
             both[0]
                 .split('\n')
-                .map(|line| -> CordPoint {
+                .map(|line| -> CordPointTuple {
                     let x_and_y = line
                         .split(',')
                         .map(|v| v.parse::<usize>().unwrap())
@@ -200,7 +200,7 @@ pub fn day13_2(file_name: &str) -> impl AnsType {
         (
             both[0]
                 .split('\n')
-                .map(|line| -> CordPoint {
+                .map(|line| -> CordPointTuple {
                     let x_and_y = line
                         .split(',')
                         .map(|v| v.parse::<usize>().unwrap())

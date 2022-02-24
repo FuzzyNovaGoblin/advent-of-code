@@ -9,16 +9,16 @@ use std::{
     fs, cmp::Ordering,
 };
 
-use crate::point_map::{CordPoint, PointMap};
+use crate::point_map::{CordPointTuple, PointMap};
 
 #[derive(PartialEq, Default, Debug)]
 struct TravelPoint {
     pub risk_level: DijkstraDistance,
-    pub pos: CordPoint,
+    pub pos: CordPointTuple,
 }
 
 impl TravelPoint {
-    fn new(risk_level: DijkstraDistance, pos: CordPoint) -> Self {
+    fn new(risk_level: DijkstraDistance, pos: CordPointTuple) -> Self {
         Self {
             risk_level,
             pos,
@@ -42,7 +42,7 @@ impl Ord for TravelPoint {
 }
 
 #[allow(dead_code)]
-pub fn print_path(been_to: &HashSet<CordPoint>, point_map: &PointMap<u32>) {
+pub fn print_path(been_to: &HashSet<CordPointTuple>, point_map: &PointMap<u32>) {
     let mut point_map: PointMap<String> = point_map.clone().into();
     for point in been_to.iter() {
         point_map[*point] = "@".into();
@@ -59,8 +59,8 @@ pub fn day15_1(file_name: &str) -> impl AnsType {
     let _data = fs::read_to_string(input_file);
 
     let mut point_map = PointMap::default();
-    let mut distance_map: HashMap<CordPoint, DijkstraDistance> = default();
-    let mut checked_pos: HashSet<CordPoint> = default();
+    let mut distance_map: HashMap<CordPointTuple, DijkstraDistance> = default();
+    let mut checked_pos: HashSet<CordPointTuple> = default();
 
     distance_map.insert((0, 0), Distance(0));
 
@@ -71,13 +71,13 @@ pub fn day15_1(file_name: &str) -> impl AnsType {
     }
 
     let dimentions = point_map.get_dimentions();
-    let last_point: CordPoint = (dimentions.0 - 1, dimentions.1 - 1);
+    let last_point: CordPointTuple = (dimentions.0 - 1, dimentions.1 - 1);
 
     let mut pos_queue = BinaryHeap::<TravelPoint>::new();
     pos_queue.push(TravelPoint::new(Distance(0), (0,0)));
 
     while checked_pos.len() < point_map.len() {
-        let (current_point, current_distance):(CordPoint, DijkstraDistance) = {
+        let (current_point, current_distance):(CordPointTuple, DijkstraDistance) = {
                 let pop_val = pos_queue.pop().unwrap();
                 (pop_val.pos, pop_val.risk_level)
         };
@@ -110,8 +110,8 @@ pub fn day15_2(file_name: &str) -> impl AnsType {
     let _data = fs::read_to_string(input_file);
 
     let mut point_map = PointMap::default();
-    let mut distance_map: HashMap<CordPoint, DijkstraDistance> = default();
-    let mut checked_pos: HashSet<CordPoint> = default();
+    let mut distance_map: HashMap<CordPointTuple, DijkstraDistance> = default();
+    let mut checked_pos: HashSet<CordPointTuple> = default();
 
     distance_map.insert((0, 0), Distance(0));
 
@@ -144,12 +144,12 @@ pub fn day15_2(file_name: &str) -> impl AnsType {
 
 
 
-    let last_point: CordPoint = (dimentions.0 - 1, dimentions.1 - 1);
+    let last_point: CordPointTuple = (dimentions.0 - 1, dimentions.1 - 1);
     let mut pos_queue = BinaryHeap::<TravelPoint>::new();
     pos_queue.push(TravelPoint::new(Distance(0), (0,0)));
 
     while checked_pos.len() < point_map.len() {
-        let (current_point, current_distance):(CordPoint, DijkstraDistance) = {
+        let (current_point, current_distance):(CordPointTuple, DijkstraDistance) = {
                 let pop_val = pos_queue.pop().unwrap();
                 (pop_val.pos, pop_val.risk_level)
         };

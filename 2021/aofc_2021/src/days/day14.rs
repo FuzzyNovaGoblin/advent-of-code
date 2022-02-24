@@ -14,9 +14,8 @@ pub fn day14_1(file_name: &str) -> impl crate::AnsType  {
         env!("ADVENT_OF_CODE_2021"),
         file_name
     );
-    let _data = fs::read_to_string(input_file);
     let (mut data_code, pair_conversion) = {
-        let both = _data
+        let both = fs::read_to_string(input_file)
             .unwrap()
             .split("\n\n")
             .map(|s| s.to_owned())

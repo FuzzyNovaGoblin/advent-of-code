@@ -1,14 +1,14 @@
-use super::CordPoint;
+use super::CordPointTuple;
 
 
 #[derive(Debug)]
 pub struct DimentionIter {
-    point: CordPoint,
-    dimentions: CordPoint,
+    point: CordPointTuple,
+    dimentions: CordPointTuple,
 }
 
 impl DimentionIter {
-    pub fn new(dimentions: CordPoint) -> Self {
+    pub fn new(dimentions: CordPointTuple) -> Self {
         Self {
             point: (0, 0),
             dimentions,
@@ -17,7 +17,7 @@ impl DimentionIter {
 }
 
 impl Iterator for DimentionIter {
-    type Item = CordPoint;
+    type Item = CordPointTuple;
 
     fn next(&mut self) -> Option<Self::Item> {
         let ret = self.point;
