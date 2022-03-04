@@ -8,16 +8,6 @@ use regex::Regex;
 
 use crate::AnsType;
 
-// enum SnailfishVal {
-//     Val(u32),
-//     SNum(Box<SnailfishNum>),
-// }
-
-// struct SnailfishNum{
-//     x: SnailfishVal,
-//     y: SnailfishVal
-// }
-
 #[derive(Debug, Clone, Copy)]
 enum SnailfishSymbol {
     OpenBraket,
@@ -210,11 +200,9 @@ impl SnailfishNum {
                             self.data.remove(i - 1);
                         }
                         self.data.insert(i - 1, SnailfishSymbol::Val(0));
-                        // dbg!("continue");
                         continue 'reduce;
                     }
                     panic!();
-                    // dbg!("continue");
                     continue 'reduce;
                 } else {
                     last_num = Some(i)
@@ -245,7 +233,6 @@ impl SnailfishNum {
                     );
                     self.data.insert(i, SnailfishSymbol::Val(curent_value / 2));
                     self.data.insert(i, SnailfishSymbol::OpenBraket);
-                    // dbg!("continue");
                     continue 'reduce;
                 }
             }
