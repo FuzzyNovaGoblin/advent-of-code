@@ -264,10 +264,12 @@ mod tests {
         assert_eq_ansval!(4735, days::day18::day18_2("day18"));
     }
     #[test]
+    #[ignore = "very slow"]
     fn day19_1() {
         assert_eq_ansval!(425, days::day19::day19_1("day19"));
     }
     #[test]
+    #[ignore = "very slow"]
     fn day19_2() {
         assert_eq_ansval!(13354, days::day19::day19_2("day19"));
     }

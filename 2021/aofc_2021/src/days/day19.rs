@@ -20,7 +20,7 @@ impl Point {
         Self { x, y, z }
     }
 
-    fn m_distance(&self, other: &Point) -> i64 {
+    fn manhattan_distance(&self, other: &Point) -> i64 {
         (self.x - other.x).abs() + (self.y - other.y).abs() + (self.z - other.z).abs()
     }
 
@@ -97,7 +97,6 @@ struct Scanner {
 }
 
 impl Scanner {
-
     fn get_all_with_rotaion(&self, rotation: &rotation::Rotation) -> Vec<Point> {
         self.points
             .iter()
@@ -138,7 +137,7 @@ impl Scanner {
                 // for each of the sub points being the aligning point
                 for offset in new_points.iter().map(|p| base_point - p) {
                     let mut valid_count = 0;
-                    '_each_original_point: for (enum_index, point) in self
+                    for (enum_index, point) in self
                         .get_all_with_rotaion(incomming_rotation)
                         .iter()
                         .enumerate()
@@ -204,7 +203,7 @@ pub fn day19_1(file_name: &str) -> impl crate::AnsType {
     let data = fs::read_to_string(input_file).unwrap();
     let mut scanners = data
         .split("\n\n")
-        .map(Scanner::build_from_str)
+        .map( Scanner::build_from_str)
         .collect::<Vec<_>>();
 
     let mut probe_map = ProbeMap::new(scanners.remove(0));
@@ -255,9 +254,10 @@ pub fn day19_2(file_name: &str) -> impl crate::AnsType {
     let mut probe_map = ProbeMap::new(scanners.remove(0));
 
     'until_no_scanners: loop {
-        if scanners.is_empty() {
+        if scanners.is_empty(){
             break;
         }
+
         for i in (0..scanners.len()).rev() {
             if let Some((rot, offset)) = probe_map.fits_in_map(&scanners[i]) {
                 let scanner = scanners.remove(i);
@@ -271,7 +271,7 @@ pub fn day19_2(file_name: &str) -> impl crate::AnsType {
                     probe_map.points.insert(point.clone());
                 }
                 probe_map.scanners.push((scanner, rot, offset));
-                // println!("found {} of ", probe_map.scanners.len());
+                println!("found {} of ", probe_map.scanners.len());
 
                 continue 'until_no_scanners;
             }
@@ -289,7 +289,7 @@ pub fn day19_2(file_name: &str) -> impl crate::AnsType {
                 continue;
             }
 
-            max_distance = p1.m_distance(p2).max(max_distance);
+            max_distance = p1.manhattan_distance(p2).max(max_distance);
         }
     }
 
@@ -434,12 +434,6 @@ mod rotation {
                 self.get_tmp_rotation_type_from_axis(axis2).direction =
                     original_rotation_val1.direction;
             }
-        }
-    }
-
-    impl AsRef<Rotation> for Rotation {
-        fn as_ref(&self) -> &Rotation {
-            self
         }
     }
 
