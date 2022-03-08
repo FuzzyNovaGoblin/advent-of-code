@@ -1,7 +1,6 @@
 use std::{
     collections::{HashSet, VecDeque},
     fs,
-    io::stdin,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -24,7 +23,7 @@ impl Region {
     }
     fn one_dim_overlap(a: &FlipRange, b: &FlipRange) -> FlipRange {
         let mut points = vec![a.end, a.start, b.end, b.start];
-        points.sort();
+        points.sort_unstable();
         FlipRange {
             start: points[1],
             end: points[2],
@@ -189,7 +188,7 @@ pub fn day22_1(file_name: &str) -> impl crate::AnsType {
     let data = fs::read_to_string(input_file).unwrap();
     let data = data.split('\n').map(FlipMove::from_str);
     let mut map: HashSet<(i64, i64, i64)> = HashSet::new();
-    for (ei, m) in data.enumerate() {
+    for m in data {
         for x in (-50).max(m.region.x.start)..=50.min(m.region.x.end) {
             for y in (-50).max(m.region.y.start)..=50.min(m.region.y.end) {
                 for z in (-50).max(m.region.z.start)..=50.min(m.region.z.end) {
@@ -214,8 +213,6 @@ struct BlockyBlocus {
     blocks: Vec<Region>,
 }
 
-fn refine_regine_list_size() {}
-
 pub fn day22_2(file_name: &str) -> impl crate::AnsType {
     let input_file = format!(
         "{}/aofc_2021/input/{}",
@@ -229,12 +226,7 @@ pub fn day22_2(file_name: &str) -> impl crate::AnsType {
         .collect::<VecDeque<_>>();
     let mut blocky_thing_guy = BlockyBlocus::default();
 
-    'mainloop: loop {
-        let m = if let Some(v) = moves.pop_front() {
-            v
-        } else {
-            break;
-        };
+    'mainloop: while let Some(m) = moves.pop_front() {
         match m.dir {
             FlipDirection::Off => 'offer: loop {
                 for i in 0..blocky_thing_guy.blocks.len() {
