@@ -26,9 +26,9 @@ impl Point {
 
     fn get_with_rotaion(&self, rotation: &rotation::Rotation) -> Point {
         Point::new(
-            rotation.translate_x(&self) * rotation.x.direction.as_int(),
-            rotation.translate_y(&self) * rotation.y.direction.as_int(),
-            rotation.translate_z(&self) * rotation.z.direction.as_int(),
+            rotation.translate_x(self) * rotation.x.direction.as_int(),
+            rotation.translate_y(self) * rotation.y.direction.as_int(),
+            rotation.translate_z(self) * rotation.z.direction.as_int(),
         )
     }
 }
@@ -134,7 +134,7 @@ impl Scanner {
         for base_point in self.get_all_with_rotaion(incomming_rotation).iter() {
             // for every posible rotation
             for r in rotation_set {
-                let new_points = new_scanner.get_all_with_rotaion(&r);
+                let new_points = new_scanner.get_all_with_rotaion(r);
                 // for each of the sub points being the aligning point
                 for offset in new_points.iter().map(|p| base_point - p) {
                     let mut valid_count = 0;
@@ -185,7 +185,7 @@ impl ProbeMap {
     fn fits_in_map(&self, new_scanner: &Scanner) -> Option<(rotation::Rotation, Point)> {
         for (scanner, rotation, offset) in &self.scanners {
             if let Some((sub_rot, sub_offset)) =
-                scanner.can_fit(new_scanner, &rotation, &self.rotation_set)
+                scanner.can_fit(new_scanner, rotation, &self.rotation_set)
             {
                 return Some((sub_rot, sub_offset + offset));
             }
@@ -204,13 +204,13 @@ pub fn day19_1(file_name: &str) -> impl crate::AnsType {
     let data = fs::read_to_string(input_file).unwrap();
     let mut scanners = data
         .split("\n\n")
-        .map(|sdata| Scanner::build_from_str(sdata))
+        .map(Scanner::build_from_str)
         .collect::<Vec<_>>();
 
     let mut probe_map = ProbeMap::new(scanners.remove(0));
 
     'until_no_scanners: loop {
-        if scanners.len() == 0 {
+        if scanners.is_empty() {
             break;
         }
         for i in (0..scanners.len()).rev() {
@@ -249,13 +249,13 @@ pub fn day19_2(file_name: &str) -> impl crate::AnsType {
     let data = fs::read_to_string(input_file).unwrap();
     let mut scanners = data
         .split("\n\n")
-        .map(|sdata| Scanner::build_from_str(sdata))
+        .map(Scanner::build_from_str)
         .collect::<Vec<_>>();
 
     let mut probe_map = ProbeMap::new(scanners.remove(0));
 
     'until_no_scanners: loop {
-        if scanners.len() == 0 {
+        if scanners.is_empty() {
             break;
         }
         for i in (0..scanners.len()).rev() {
@@ -439,7 +439,7 @@ mod rotation {
 
     impl AsRef<Rotation> for Rotation {
         fn as_ref(&self) -> &Rotation {
-            &self
+            self
         }
     }
 
