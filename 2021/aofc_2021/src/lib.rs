@@ -108,8 +108,6 @@ impl<T: Debug> AnsType for Option<T> {
 // impl<T:Display> !NotDisplay for T {}
 // impl<T:AnsNotDisplay> !NotDisplay for T {}
 
-
-
 impl<T: Display + AnsNotDisplay> AnsType for T {
     fn value(&self) -> String {
         format!("{}", self)
@@ -278,7 +276,7 @@ mod tests {
         assert_eq_ansval!(5819, days::day20::day20_1("day20"));
     }
     #[test]
-    #[ignore="slow"]
+    #[ignore = "slow"]
     fn day20_2() {
         assert_eq_ansval!(18516, days::day20::day20_2("day20"));
     }
@@ -296,7 +294,7 @@ mod tests {
     }
     #[test]
     fn day22_2() {
-        assert_eq_ansval!((), days::day22::day22_2("day22"));
+        assert_eq_ansval!(1218645427221987_u64, days::day22::day22_2("day22"));
     }
     #[test]
     fn day23_1() {
