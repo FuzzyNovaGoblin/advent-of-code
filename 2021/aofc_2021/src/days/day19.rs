@@ -466,25 +466,3 @@ mod rotation {
         rot_set
     }
 }
-
-#[cfg(test)]
-mod test {
-    use super::{day19_1, day19_2};
-    use crate::assert_eq_ansval;
-    use crate::days::day19::rotation::generate_rotation_set;
-
-    #[test]
-    fn posible_rotations() {
-        assert_eq!(24, generate_rotation_set().len());
-    }
-
-    #[test]
-    #[ignore]
-    fn t1() {
-        assert_eq_ansval!(79, day19_1("test"));
-    }
-    #[test]
-    fn t2() {
-        assert_eq_ansval!(3621, day19_2("test"));
-    }
-}
