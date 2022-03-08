@@ -292,7 +292,7 @@ mod tests {
     }
     #[test]
     fn day22_1() {
-        assert_eq_ansval!((), days::day22::day22_1("day22"));
+        assert_eq_ansval!(527915, days::day22::day22_1("day22"));
     }
     #[test]
     fn day22_2() {
