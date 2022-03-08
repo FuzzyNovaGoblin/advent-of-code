@@ -275,11 +275,12 @@ mod tests {
     }
     #[test]
     fn day20_1() {
-        assert_eq_ansval!((), days::day20::day20_1("day20"));
+        assert_eq_ansval!(5819, days::day20::day20_1("day20"));
     }
     #[test]
+    #[ignore="slow"]
     fn day20_2() {
-        assert_eq_ansval!((), days::day20::day20_2("day20"));
+        assert_eq_ansval!(18516, days::day20::day20_2("day20"));
     }
     #[test]
     fn day21_1() {

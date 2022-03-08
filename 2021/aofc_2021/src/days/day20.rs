@@ -51,17 +51,8 @@ impl PointHashMap {
         }
         ret_val
     }
-    fn get_surounding_points_num(
-        &self,
-        /*         save_map: HashMap<Vec<char>, usize>,
-         */ point: &CordPoint,
-    ) -> usize {
+    fn get_surounding_points_num(&self, point: &CordPoint) -> usize {
         let chars = self.get_surounding_points(point);
-
-        // loop {
-        //     if save_map.contains_key(&chars) {
-        //         break;
-        //     }
 
         let mut ret_val = 0;
         for c in chars {
@@ -72,13 +63,10 @@ impl PointHashMap {
         }
         ret_val >>= 1;
 
-        // break;
-        // }
-
         ret_val
     }
 
-    fn print_map(&self) {
+    fn _print_map(&self) {
         let (min, max) = self.get_dimentions();
         for y in min.y..=max.y {
             for x in min.x..=max.x {
@@ -87,6 +75,7 @@ impl PointHashMap {
             println!();
         }
     }
+
     fn get_dimentions(&self) -> (CordPoint, CordPoint) {
         let (mut max_x, mut min_x, mut max_y, mut min_y) = (0, 0, 0, 0);
         for key in self.map.keys() {
@@ -131,7 +120,7 @@ pub fn day20_1(file_name: &str) -> impl crate::AnsType {
         input_image.default_point = if input_image.default_point == '.' {
             image_enhancement_algorithm[0]
         } else {
-            image_enhancement_algorithm[1]
+            *image_enhancement_algorithm.last().unwrap()
         }
     }
 
@@ -163,6 +152,7 @@ pub fn day20_2(file_name: &str) -> impl crate::AnsType {
     for _ in 0..50 {
         let (min, max) = input_image.get_dimentions();
         let mut new_image: PointHashMap = default();
+        new_image.default_point = input_image.default_point;
         for y in min.y - 1..=max.y + 1 {
             for x in min.x - 1..=max.x + 1 {
                 new_image[CordPoint::new(x, y)] = image_enhancement_algorithm
@@ -170,31 +160,16 @@ pub fn day20_2(file_name: &str) -> impl crate::AnsType {
             }
         }
         input_image = new_image;
+
         input_image.default_point = if input_image.default_point == '.' {
             image_enhancement_algorithm[0]
         } else {
-            image_enhancement_algorithm[1]
-        }
+            *image_enhancement_algorithm.last().unwrap()
+        };
     }
 
     input_image.map.into_iter().fold(
         0,
         |f_val, (_, n_val)| if n_val == '#' { f_val + 1 } else { f_val },
     )
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-    use crate::assert_eq_ansval;
-
-    #[test]
-    fn t1() {
-        assert_eq_ansval!(35, day20_1("test"));
-    }
-    #[test]
-    #[ignore]
-    fn t2() {
-        assert_eq_ansval!((), day20_2("test"));
-    }
 }
