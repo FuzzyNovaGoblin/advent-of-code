@@ -1,14 +1,9 @@
-#![allow(dead_code)]
-
 use std::{
-    borrow::Borrow,
     cmp::{Ordering, Reverse},
     collections::{BinaryHeap, HashMap, HashSet},
     default::default,
     fmt::Display,
-    fs,
-    io::stdin,
-    vec,
+    fs, vec,
 };
 
 enum BurrowState {
@@ -43,10 +38,8 @@ const POINTS: [(u8, u8); 19] = [
 ];
 
 const STOPING_POINTS: [PointPair; 7] = [(0, 0), (1, 0), (3, 0), (5, 0), (7, 0), (9, 0), (10, 0)];
-// const GOAL_POINTS: [PointPair; 7] = [(0, 0), (1, 0), (3, 0), (5, 0), (7, 0), (9, 0), (10, 0)];
 
 fn distance(a: PointPair, b: PointPair) -> i32 {
-    let val = 10_f64.powi((a.0 as i32 - 2) / 2);
     if a == b {
         return 0;
     }
@@ -56,21 +49,6 @@ fn distance(a: PointPair, b: PointPair) -> i32 {
     } else {
         (a.1 + b.1 + b.0.abs_diff(a.0)) as i32
     }
-
-    // (a.0.abs_diff(b.0) + a.1.abs_diff(b.1)) as i32
-    // +
-    // ((a.0.abs_diff(b.0)*a.0.abs_diff(b.0) +a.1.abs_diff(b.1)*a.1.abs_diff(b.1)) as f32).sqrt() as i32
-
-    // let x_dist = a.0.abs_diff(b.0);
-    // let y_dist = if b.1 == 0 {
-    //     a.1
-    // } else if x_dist != 0 {
-    //     a.1 + b.1
-    // } else {
-    //     a.1.abs_diff(b.1)
-    // };
-    // let add_v = if b.1 != 0 && b.0 != a.0 { 0 } else { 0 };
-    // (x_dist + y_dist) as i32 + add_v
 }
 
 struct BoardStatePointsIter<'a> {
@@ -132,7 +110,6 @@ impl std::hash::Hash for BoardState {
 
 impl Display for BoardState {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        // let parts = self.iter().collect::<HashSet<_>>();
         write!(f, "#############\n#")?;
         for x in 0..=10 {
             self.print_at_point(f, (x, 0))?;
@@ -157,24 +134,21 @@ impl BoardState {
         f: &mut std::fmt::Formatter<'_>,
         point: PointPair,
     ) -> std::fmt::Result {
-        // dbg!(point);
         match self.get_point_loc(point) {
             Some((c, _)) => write!(f, "{}", c),
             None => write!(f, "."),
         }
     }
 
-    pub fn iter<'a>(&'a self) -> BoardStatePointsIter<'a> {
+    pub fn iter(&self) -> BoardStatePointsIter {
         BoardStatePointsIter::new(self)
     }
 
     fn get_point_loc(&self, point: PointPair) -> Option<(char, usize)> {
-        let mut count = 0;
-        for p in self.iter() {
+        for (count, p) in self.iter().enumerate() {
             if p == point {
-                return Some(((65 + (count / 2_u8)) as char, (count % 2) as usize));
+                return Some(((65 + (count as u8 / 2_u8)) as char, (count % 2) as usize));
             }
-            count += 1;
         }
         None
     }
@@ -239,15 +213,6 @@ impl BoardState {
         ret_val
     }
 
-    // fn get_points(&self) -> Vec<PointPair> {
-    //     let mut ret_val = Vec::new();
-    //     ret_val.append(&mut self.apos.clone());
-    //     ret_val.append(&mut self.bpos.clone());
-    //     ret_val.append(&mut self.cpos.clone());
-    //     ret_val.append(&mut self.dpos.clone());
-    //     ret_val
-    // }
-
     fn x_val_for_char(c: char) -> u8 {
         match c {
             'A' => 2,
@@ -299,7 +264,6 @@ impl BoardState {
     }
 
     fn get_point_moves(&self, og_point: PointPair) -> Vec<(PointPair, u32)> {
-        // println!("{:?}", og_point);
         let point = self.get_point_loc(og_point).unwrap();
 
         if Self::x_val_for_char(point.0) == og_point.0 {
@@ -316,10 +280,7 @@ impl BoardState {
         }
 
         if let Some(y) = match self.get_burrow(point.0) {
-            BurrowState::Empty => {
-                let end = (Self::x_val_for_char(point.0), 2);
-                Some(2)
-            }
+            BurrowState::Empty => Some(2),
             BurrowState::Done => return vec![],
             BurrowState::HasOthers => None,
             BurrowState::HasSame => Some(1),
@@ -357,20 +318,19 @@ impl BoardState {
             .min(distance((8, 1), self.dpos[1]) + distance((8, 2), self.dpos[0]));
 
         a + b + c + d
-        // a + b * 10 + c * 100 + d * 1000
     }
 
-    fn print_last_moves(&self) {
+    fn _print_last_moves(&self) {
         if let Some(pat) = &self.last {
-            pat.print_last_moves();
+            pat._print_last_moves();
         }
         println!("\n{}\n", self);
     }
 
-    fn print_last_moves_reversed(&self) {
+    fn _print_last_moves_reversed(&self) {
         println!("\n{}\ncost:{}\n", self, self.cost);
         if let Some(pat) = &self.last {
-            pat.print_last_moves_reversed();
+            pat._print_last_moves_reversed();
         }
     }
 
@@ -387,7 +347,7 @@ impl BoardState {
                         'A' => {
                             new_state.apos.push(moves.0);
                             new_state.steps += 1;
-                            new_state.cost += moves.1 * 1;
+                            new_state.cost += moves.1;
                         }
                         'B' => {
                             new_state.bpos.push(moves.0);
@@ -437,48 +397,15 @@ impl PartialEq for BoardState {
 
 impl Ord for BoardState {
     fn cmp(&self, other: &Self) -> Ordering {
-        // match self.steps.cmp(&other.steps) {
-        //     Ordering::Equal => match self.calc_distances().cmp(&other.calc_distances()) {
-        //         Ordering::Equal => self.cost.cmp(&other.cost),
-        //         o => return o,
-        //     },
-        //     o => o,
-        // }
         match self.cost.cmp(&other.cost) {
-            Ordering::Equal => match self.steps.cmp(&other.steps) {
-                // Ordering::Equal => self.calc_distances().cmp(&other.calc_distances()),
-                o => return o,
-            },
+            Ordering::Equal => self.steps.cmp(&other.steps),
             o => o,
         }
-
-        // match self.calc_distances().cmp(&other.calc_distances()) {
-        //     Ordering::Equal => self.cost.cmp(&other.cost),
-
-        //     o => o,
-        // }
     }
 }
 
 impl PartialOrd for BoardState {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        // match self.steps.partial_cmp(&other.steps) {
-        //     Some(Ordering::Equal) | None => {
-        //         match self.calc_distances().partial_cmp(&other.calc_distances()) {
-        //             Some(Ordering::Equal) => self.cost.partial_cmp(&other.cost),
-        //             Some(o) => Some(o),
-        //             None => None,
-        //         }
-        //     }
-        //     o => o,
-        // }
-
-        // match self.calc_distances().partial_cmp(&other.calc_distances()) {
-        //     Some(Ordering::Equal) => self.cost.partial_cmp(&other.cost),
-        //
-        //     o => o,
-        // }
-
         match self.cost.partial_cmp(&other.cost) {
             Some(Ordering::Equal) | None => {
                 match self.calc_distances().partial_cmp(&other.calc_distances()) {
@@ -506,89 +433,26 @@ pub fn day23_1(file_name: &str) -> impl crate::AnsType {
         .collect::<Vec<_>>();
 
     let mut states: BinaryHeap<Reverse<BoardState>> = default();
-    // let mut states: Vec<BoardState> = default();
     states.push(Reverse(BoardState::initialize(data)));
-
-    // states.push(BoardState::initialize(data));
 
     let mut been_to = HashMap::<BoardState, u32>::new();
     been_to.insert(states.peek().unwrap().0.clone(), 0);
-    // been_to.insert(states, 0);
-
-    let mut found_one = false;
-    let mut min_found = 0;
-    let mut min_found_state = None;
-
-    // let mut next = 0;
 
     while let Some(Reverse(state)) = states.pop() {
-    // while let Some(state) = states.pop() {
-        // println!("{}", state.calc_distances());
-        // todo!();
         if state.calc_distances() == 0 {
-            println!("found {}", state.cost);
-
-            if found_one {
-                if min_found > state.cost {
-                    min_found = state.cost;
-                    min_found_state = Some(state);
-                }
-            } else {
-                min_found = state.cost;
-                min_found_state = Some(state);
-                found_one = true;
-            }
-            break;
+            return state.cost;
         }
 
         println!("{}", state);
 
-        // todo!();
-        // dbg!(&been_to.len());
-        // count += 1;
-        // if count > 100 {
-        //     count = 0;
-        //     println!("{}\n\n", state);
-
-        //     // for b in been_to {
-        //     //     println!("{}\n\n", b);
-        //     // }
-        //     // todo!();
-        // }
-        // if !found_one {
-
-        // println!("{}\ncost:{}\n\n", state, state.cost);
-
-        // if state.cost > 12521 {
-        //     break;
-        // }
-
         for m in state.into_moves() {
-            // println!("({})\n{}\ncost:{}\n\n", states.len(), m, m.cost);
-
             if (!been_to.contains_key(&m)) || *been_to.get(&m).unwrap() > m.cost {
                 been_to.insert(m.clone(), m.cost);
                 states.push(Reverse(m));
             }
         }
-        let mut buf = String::new();
-        // stdin().read_line(&mut buf);
-        // next = buf.trim().parse().unwrap();
-        // panic!();
-        // }
     }
-
-    // min_found_state.unwrap().print_last_moves_reversed();
-    // loop{
-    //     if let Some(pat) = min_found_state {
-    //         println!("{}", pat);
-    //         min_found_state = Some(pat);
-    //     }
-    //     else{
-    //         break;
-    //     }
-    // }
-    min_found
+    unreachable!()
 }
 
 pub fn day23_2(file_name: &str) -> impl crate::AnsType {
