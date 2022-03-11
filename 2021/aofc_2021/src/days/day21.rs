@@ -67,7 +67,7 @@ impl Iterator for DeterministicDice {
 pub fn day21_1(file_name: &str) -> impl crate::AnsType {
     let input_file = format!(
         "{}/aofc_2021/input/{}",
-        env!("ADVENT_OF_CODE_2021"),
+        std::env::var("ADVENT_OF_CODE_2021").unwrap(),
         file_name
     );
     let mut data = fs::read_to_string(input_file)
@@ -93,7 +93,7 @@ const OUTCOMES: [(u8, u8); 7] = [(3, 1), (4, 3), (5, 6), (6, 7), (7, 6), (8, 3),
 pub fn day21_2(file_name: &str) -> impl crate::AnsType {
     let input_file = format!(
         "{}/aofc_2021/input/{}",
-        env!("ADVENT_OF_CODE_2021"),
+        std::env::var("ADVENT_OF_CODE_2021").unwrap(),
         file_name
     );
     let mut data = fs::read_to_string(input_file)

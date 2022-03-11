@@ -53,7 +53,7 @@ pub fn print_path(been_to: &HashSet<CordPointTuple>, point_map: &PointMap<u32>) 
 pub fn day15_1(file_name: &str) -> impl AnsType {
     let input_file = format!(
         "{}/aofc_2021/input/{}",
-        env!("ADVENT_OF_CODE_2021"),
+        std::env::var("ADVENT_OF_CODE_2021").unwrap(),
         file_name
     );
     let _data = fs::read_to_string(input_file);
@@ -104,7 +104,7 @@ pub fn day15_1(file_name: &str) -> impl AnsType {
 pub fn day15_2(file_name: &str) -> impl AnsType {
     let input_file = format!(
         "{}/aofc_2021/input/{}",
-        env!("ADVENT_OF_CODE_2021"),
+        std::env::var("ADVENT_OF_CODE_2021").unwrap(),
         file_name
     );
     let _data = fs::read_to_string(input_file);

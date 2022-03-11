@@ -246,7 +246,7 @@ impl SnailfishNum {
 pub fn day18_1(file_name: &str) -> impl crate::AnsType {
     let input_file = format!(
         "{}/aofc_2021/input/{}",
-        env!("ADVENT_OF_CODE_2021"),
+        std::env::var("ADVENT_OF_CODE_2021").unwrap(),
         file_name
     );
     let reg_expr = Regex::new(r"((?:\d+)|(?:\[)|(?:\]))").unwrap();
@@ -269,7 +269,7 @@ pub fn day18_1(file_name: &str) -> impl crate::AnsType {
 pub fn day18_2(file_name: &str) -> impl crate::AnsType {
     let input_file = format!(
         "{}/aofc_2021/input/{}",
-        env!("ADVENT_OF_CODE_2021"),
+        std::env::var("ADVENT_OF_CODE_2021").unwrap(),
         file_name
     );
     let reg_expr = Regex::new(r"((?:\d+)|(?:\[)|(?:\]))").unwrap();

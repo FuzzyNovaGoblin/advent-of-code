@@ -50,8 +50,12 @@ use std::fs;
 
 use crate::AnsType;
 
-pub fn day1_1(file_name: &str) -> impl AnsType{
-     let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
+pub fn day1_1(file_name: &str) -> impl AnsType {
+    let input_file = format!(
+        "{}/aofc_2021/input/{}",
+        std::env::var("ADVENT_OF_CODE_2021").unwrap(),
+        file_name
+    );
     let data = fs::read_to_string(input_file)
         .expect("couldn't read in file")
         .split('\n')
@@ -71,8 +75,12 @@ pub fn day1_1(file_name: &str) -> impl AnsType{
     bigger_count
 }
 
-pub fn day1_2 (file_name: &str)->  impl crate::AnsType{
-	let input_file = format!("{}/aofc_2021/input/{}",env!("ADVENT_OF_CODE_2021"),file_name);
+pub fn day1_2(file_name: &str) -> impl crate::AnsType {
+    let input_file = format!(
+        "{}/aofc_2021/input/{}",
+        std::env::var("ADVENT_OF_CODE_2021").unwrap(),
+        file_name
+    );
 
     let data = fs::read_to_string(input_file)
         .unwrap()
@@ -83,19 +91,13 @@ pub fn day1_2 (file_name: &str)->  impl crate::AnsType{
     let mut last_value = 0;
     let mut this_value;
     let mut count = 0;
-    for sli in data.windows(3)
-    {
-        this_value = sli[0]+ sli[1]+ sli[2];
+    for sli in data.windows(3) {
+        this_value = sli[0] + sli[1] + sli[2];
         if !first_lap {
             if this_value > last_value {
                 count += 1;
-                // println!("{} (increased)", a);
-            }
-            else{
-                // println!("{} (decreased)", a);
             }
         } else {
-            // println!("{}(N/A - no previous measurement)", a);
             first_lap = false;
         }
         last_value = this_value;

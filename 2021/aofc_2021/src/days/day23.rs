@@ -422,7 +422,7 @@ impl PartialOrd for BoardState {
 pub fn day23_1(file_name: &str) -> impl crate::AnsType {
     let input_file = format!(
         "{}/aofc_2021/input/{}",
-        env!("ADVENT_OF_CODE_2021"),
+        std::env::var("ADVENT_OF_CODE_2021").unwrap(),
         file_name
     );
 
@@ -443,7 +443,6 @@ pub fn day23_1(file_name: &str) -> impl crate::AnsType {
             return state.cost;
         }
 
-        println!("{}", state);
 
         for m in state.into_moves() {
             if (!been_to.contains_key(&m)) || *been_to.get(&m).unwrap() > m.cost {
@@ -458,7 +457,7 @@ pub fn day23_1(file_name: &str) -> impl crate::AnsType {
 pub fn day23_2(file_name: &str) -> impl crate::AnsType {
     let input_file = format!(
         "{}/aofc_2021/input/{}",
-        env!("ADVENT_OF_CODE_2021"),
+        std::env::var("ADVENT_OF_CODE_2021").unwrap(),
         file_name
     );
     let _data = fs::read_to_string(input_file);
