@@ -297,6 +297,7 @@ mod tests {
         assert_eq_ansval!(1218645427221987_u64, days::day22::day22_2("day22"));
     }
     #[test]
+    #[ignore = "slow"]
     fn day23_1() {
         assert_eq_ansval!(14460, days::day23::day23_1("day23"));
     }

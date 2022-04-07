@@ -1,16 +1,20 @@
+use dbgu::dbgu;
 use std::{
     cmp::{Ordering, Reverse},
     collections::{BinaryHeap, HashMap, HashSet},
     default::default,
     fmt::Display,
-    fs, vec,
+    fs,
+    io::stdin,
+    vec,
 };
 
+const NEW_INSERT: &str = "  #D#C#B#A#\n  #D#B#A#C#";
+
 enum BurrowState {
-    Empty,
+    Valid(u8),
     Done,
     HasOthers,
-    HasSame,
 }
 
 type PointPair = (u8, u8);
@@ -71,7 +75,9 @@ impl<'a> Iterator for BoardStatePointsIter<'a> {
     type Item = PointPair;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.letter == 'E' {}
+        if self.letter == 'E' {
+            return None;
+        }
         let ret_val = match self.letter {
             'A' => self.state.apos[self.index],
             'B' => self.state.bpos[self.index],
@@ -80,7 +86,7 @@ impl<'a> Iterator for BoardStatePointsIter<'a> {
             _ => return None,
         };
         self.index += 1;
-        if self.index > 1 {
+        if self.index > 3 {
             self.index = 0;
             self.letter = (self.letter as u8 + 1) as char;
         }
@@ -94,17 +100,15 @@ struct BoardState {
     last: Option<Box<BoardState>>,
     steps: u32,
     apos: Vec<(u8, u8)>,
-    bpos: Vec<(u8, u8)>,
+    pub bpos: Vec<(u8, u8)>,
     cpos: Vec<(u8, u8)>,
     dpos: Vec<(u8, u8)>,
+    image: String,
 }
 
 impl std::hash::Hash for BoardState {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.apos.hash(state);
-        self.bpos.hash(state);
-        self.cpos.hash(state);
-        self.dpos.hash(state);
+        self.image.hash(state);
     }
 }
 
@@ -119,10 +123,13 @@ impl Display for BoardState {
             self.print_at_point(f, (x, 1))?;
             write!(f, "#")?;
         }
-        write!(f, "##\n  #")?;
-        for x in (2..=8).step_by(2) {
-            self.print_at_point(f, (x, 2))?;
-            write!(f, "#")?;
+        write!(f, "##")?;
+        for y in 2..=4 {
+            write!(f, "\n  #")?;
+            for x in (2..=8).step_by(2) {
+                self.print_at_point(f, (x, y))?;
+                write!(f, "#")?;
+            }
         }
         write!(f, "\n  #########")
     }
@@ -147,7 +154,7 @@ impl BoardState {
     fn get_point_loc(&self, point: PointPair) -> Option<(char, usize)> {
         for (count, p) in self.iter().enumerate() {
             if p == point {
-                return Some(((65 + (count as u8 / 2_u8)) as char, (count % 2) as usize));
+                return Some(((65 + (count as u8 / 4_u8)) as char, (count % 4) as usize));
             }
         }
         None
@@ -181,7 +188,7 @@ impl BoardState {
 
         let mut ret_val = BoardState::default();
 
-        for y in 1..=2 {
+        for y in 1..=4 {
             for x in (2..=8).step_by(2) {
                 let c = init_data[count];
                 match c {
@@ -194,6 +201,29 @@ impl BoardState {
                 count += 1;
             }
         }
+        ret_val.image = format!("{}", ret_val);
+        ret_val
+    }
+
+    pub fn initialize_with_addin(init_data: Vec<char>) -> Self {
+        let mut count = 0;
+
+        let mut ret_val = BoardState::default();
+
+        for y in 1..=4 {
+            for x in (2..=8).step_by(2) {
+                let c = init_data[count];
+                match c {
+                    'A' => ret_val.apos.push((x, y)),
+                    'B' => ret_val.bpos.push((x, y)),
+                    'C' => ret_val.cpos.push((x, y)),
+                    'D' => ret_val.dpos.push((x, y)),
+                    _ => unreachable!(),
+                }
+                count += 1;
+            }
+        }
+        ret_val.image = format!("{}", ret_val);
         ret_val
     }
 
@@ -252,18 +282,31 @@ impl BoardState {
 
     fn get_burrow(&self, c: char) -> BurrowState {
         let x = Self::x_val_for_char(c);
-        match self.get_point_loc((x, 2)) {
-            Some((cc, _)) if cc == c => match self.get_point_loc((x, 1)) {
-                Some((cc, _)) if cc == c => BurrowState::Done,
-                Some(_) => BurrowState::HasOthers,
-                None => BurrowState::HasSame,
-            },
-            Some(_) => BurrowState::HasOthers,
-            None => BurrowState::Empty,
+        for y in (1..=4).rev() {
+            match self.get_point_loc((x, y)) {
+                Some((c_in_b, _)) if c_in_b != c => return BurrowState::HasOthers,
+                Some((c_in_b, _)) if c_in_b == c => (),
+                Some(_) => unreachable!(),
+                None => return BurrowState::Valid(y),
+            }
         }
+        BurrowState::Done
+        // match self.get_point_loc((x, 2)) {
+        //     Some((cc, _)) if cc == c => match self.get_point_loc((x, 1)) {
+        //         Some((cc, _)) if cc == c => BurrowState::Done,
+        //         Some(_) => BurrowState::HasOthers,
+        //         None => BurrowState::HasSame,
+        //     },
+        //     Some(_) => BurrowState::HasOthers,
+        //     None => BurrowState::Empty,
+        // }
     }
 
-    fn get_point_moves(&self, og_point: PointPair) -> Vec<(PointPair, u32)> {
+    fn get_point_moves(
+        &self,
+        og_point: PointPair,
+        burrow_states: &HashMap<char, BurrowState>,
+    ) -> Vec<(PointPair, u32)> {
         let point = self.get_point_loc(og_point).unwrap();
 
         if Self::x_val_for_char(point.0) == og_point.0 {
@@ -279,13 +322,12 @@ impl BoardState {
             }
         }
 
-        if let Some(y) = match self.get_burrow(point.0) {
-            BurrowState::Empty => Some(2),
+        if let Some(y) = match burrow_states.get(&point.0).unwrap() {
             BurrowState::Done => return vec![],
             BurrowState::HasOthers => None,
-            BurrowState::HasSame => Some(1),
+            BurrowState::Valid(v) => Some(v),
         } {
-            let end = (Self::x_val_for_char(point.0), y);
+            let end = (Self::x_val_for_char(point.0), *y);
             if let Some(cp) = self.clear_path(og_point, end) {
                 return vec![(end, cp)];
             }
@@ -306,18 +348,25 @@ impl BoardState {
     }
 
     fn calc_distances(&self) -> i32 {
-        let a = (distance((2, 1), self.apos[0]) + distance((2, 2), self.apos[1]))
-            .min(distance((2, 1), self.apos[1]) + distance((2, 2), self.apos[0]));
+        let mut ret_val = 0;
 
-        let b = (distance((4, 1), self.bpos[0]) + distance((4, 2), self.bpos[1]))
-            .min(distance((4, 1), self.bpos[1]) + distance((4, 2), self.bpos[0]));
+        macro_rules! calc_dist_mac {
+            ($vec_name:ident, $target:literal) => {
+                for i in 0..4 {
+                    let mut dist = ($target - (self.$vec_name[i].0 as i32)).abs();
+                    if self.$vec_name[i].1 != 0 {
+                        dist *= 2;
+                    }
+                    ret_val += dist;
+                }
+            };
+        }
 
-        let c = (distance((6, 1), self.cpos[0]) + distance((6, 2), self.cpos[1]))
-            .min(distance((6, 1), self.cpos[1]) + distance((6, 2), self.cpos[0]));
-        let d = (distance((8, 1), self.dpos[0]) + distance((8, 2), self.dpos[1]))
-            .min(distance((8, 1), self.dpos[1]) + distance((8, 2), self.dpos[0]));
-
-        a + b + c + d
+        calc_dist_mac!(apos, 2);
+        calc_dist_mac!(bpos, 4);
+        calc_dist_mac!(cpos, 6);
+        calc_dist_mac!(dpos, 8);
+        ret_val
     }
 
     fn _print_last_moves(&self) {
@@ -337,10 +386,15 @@ impl BoardState {
     fn into_moves(self) -> Vec<Self> {
         let mut ret_val = Vec::new();
 
+        let mut burrow_states = HashMap::<char, BurrowState>::new();
+        for i in 'A'..='D' {
+            burrow_states.insert(i, self.get_burrow(i));
+        }
+
         for p in self.iter() {
             let mut new_state = self.clone();
             if let Some(letter) = new_state.remove_point(p) {
-                for moves in self.get_point_moves(p) {
+                for moves in self.get_point_moves(p, &burrow_states) {
                     let mut new_state = new_state.clone();
                     new_state.last = Some(Box::new(self.clone()));
                     match letter {
@@ -366,6 +420,7 @@ impl BoardState {
                         }
                         _ => unreachable!(),
                     }
+                    new_state.image = format!("{}", new_state);
                     ret_val.push(new_state);
                 }
             }
@@ -384,14 +439,7 @@ fn sub_one_or_zero(v: u8) -> u8 {
 
 impl PartialEq for BoardState {
     fn eq(&self, other: &Self) -> bool {
-        ((self.apos[0] == other.apos[0] && self.apos[1] == other.apos[1])
-            || (self.apos[0] == other.apos[1] && self.apos[1] == other.apos[0]))
-            && ((self.bpos[0] == other.bpos[0] && self.bpos[1] == other.bpos[1])
-                || (self.bpos[0] == other.bpos[1] && self.bpos[1] == other.bpos[0]))
-            && ((self.cpos[0] == other.cpos[0] && self.cpos[1] == other.cpos[1])
-                || (self.cpos[0] == other.cpos[1] && self.cpos[1] == other.cpos[0]))
-            && ((self.dpos[0] == other.dpos[0] && self.dpos[1] == other.dpos[1])
-                || (self.dpos[0] == other.dpos[1] && self.dpos[1] == other.dpos[0]))
+        self.image == other.image
     }
 }
 
@@ -419,49 +467,79 @@ impl PartialOrd for BoardState {
     }
 }
 
-pub fn day23_1(file_name: &str) -> impl crate::AnsType {
-    let input_file = format!(
-        "{}/aofc_2021/input/{}",
-        std::env::var("ADVENT_OF_CODE_2021").unwrap(),
-        file_name
-    );
-
-    let data = fs::read_to_string(input_file)
-        .unwrap()
-        .chars()
-        .filter(|c| matches!(c, 'A'..='D'))
-        .collect::<Vec<_>>();
-
-    let mut states: BinaryHeap<Reverse<BoardState>> = default();
-    states.push(Reverse(BoardState::initialize(data)));
-
-    let mut been_to = HashMap::<BoardState, u32>::new();
-    been_to.insert(states.peek().unwrap().0.clone(), 0);
-
-    while let Some(Reverse(state)) = states.pop() {
-        if state.calc_distances() == 0 {
-            return state.cost;
-        }
-
-
-        for m in state.into_moves() {
-            if (!been_to.contains_key(&m)) || *been_to.get(&m).unwrap() > m.cost {
-                been_to.insert(m.clone(), m.cost);
-                states.push(Reverse(m));
-            }
-        }
-    }
-    unreachable!()
-}
-
 pub fn day23_2(file_name: &str) -> impl crate::AnsType {
     let input_file = format!(
         "{}/aofc_2021/input/{}",
         std::env::var("ADVENT_OF_CODE_2021").unwrap(),
         file_name
     );
-    let _data = fs::read_to_string(input_file);
-    todo!()
+
+    let data = {
+        let mut file_data = fs::read_to_string(input_file)
+            .unwrap()
+            .split('\n')
+            .map(str::to_owned)
+            .collect::<Vec<String>>();
+
+        file_data.insert(3, String::from(NEW_INSERT));
+
+        file_data
+            .into_iter()
+            .fold(String::new(), |fv, nv| format!("{}\n{}", fv, nv))
+            .chars()
+            .filter(|c| matches!(c, 'A'..='D'))
+            .collect::<Vec<_>>()
+    };
+
+    // let tmp_board = BoardState::initialize(data);
+
+    let mut states: BinaryHeap<Reverse<BoardState>> = default();
+    dbgu!(data);
+    states.push(Reverse(BoardState::initialize_with_addin(data)));
+
+    // println!("{:?}", states);
+
+    // println!("{}", states.pop().unwrap().0);
+    // println!("{:?}", states.pop().unwrap().0);
+    let mut been_to = HashMap::<BoardState, u32>::new();
+    been_to.insert(states.peek().unwrap().0.clone(), 0);
+
+    while let Some(Reverse(mut state)) = states.pop() {
+        state.cost = *been_to.get(&state).unwrap();
+        // count += 1;
+        // if count >= 500{
+        //     count = 0;
+
+        // println!("cost: {}\n{}\n\n", state.cost, state);
+
+        if state.calc_distances() == 0 {
+            return state.cost;
+        }
+
+        for m in state.into_moves() {
+            // if m.cost == 40 {
+            //     println!("--------------");
+            //     println!("first");
+            //     println!("{}\n", m);
+            //     for b in &been_to {
+            //         println!("{}\n", b.0);
+            //     }
+            //     println!("--------------");
+            // }
+            if !been_to.contains_key(&m) {
+                been_to.insert(m.clone(), m.cost);
+                states.push(Reverse(m));
+            } else {
+                let e = been_to.entry(m.clone()).or_insert(m.cost);
+                if *e > m.cost {
+                    *e = m.cost;
+                }
+            }
+        }
+        let mut tmp = String::new();
+        // stdin().read_line(&mut tmp);
+    }
+    unreachable!("Ran out of posible board states")
 }
 
 #[cfg(test)]
@@ -470,12 +548,6 @@ mod test {
     use crate::assert_eq_ansval;
 
     #[test]
-    #[ignore]
-    fn t1() {
-        assert_eq_ansval!((12521), day23_1("test"));
-    }
-    #[test]
-    #[ignore]
     fn t2() {
         assert_eq_ansval!((), day23_2("test"));
     }
