@@ -73,8 +73,8 @@ macro_rules! assert_eq_dbgfmt {
 #[macro_export]
 macro_rules! assert_eq_ansval {
     ($a:expr, $b:expr) => {
-        let a = crate::AnsType::value(&$a);
-        let b = crate::AnsType::value(&$b);
+        let a = $crate::AnsType::value(&$a);
+        let b = $crate::AnsType::value(&$b);
         assert_eq!(a, b, "\nexpected {} to be {}", b, a);
     };
 }
