@@ -6,7 +6,7 @@ use aofc_2022::{prelude::*, AnsType};
 
 macro_rules! getday_fn {
     ( $day_num:expr, $do_run:expr, $is_test:expr , $($n:ident),*) => {
-        match format!("{}",$day_num).as_str() {
+        match format!("y{}",$day_num).as_str() {
             $(
                 stringify!($n) => {
                     if $do_run.0{
