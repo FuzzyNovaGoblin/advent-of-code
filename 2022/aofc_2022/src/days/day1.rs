@@ -78,20 +78,3 @@ pub fn day1_2(file_name: &str) -> impl crate::AnsType {
         .last()
         .unwrap()
 }
-
-#[cfg(test)]
-mod test {
-    use super::*;
-    use crate::assert_eq_ansval;
-
-    #[test]
-    #[ignore]
-    fn t1() {
-        assert_eq_ansval!((), day1_1("test"));
-    }
-    #[test]
-    #[ignore]
-    fn t2() {
-        assert_eq_ansval!((), day1_2("test"));
-    }
-}
