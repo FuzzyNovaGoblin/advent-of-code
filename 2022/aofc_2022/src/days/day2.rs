@@ -54,12 +54,12 @@ impl RPS {
     fn fight(&self, other: &RPS) -> u32 {
         match (self, other) {
             (RPS::Rock, RPS::Rock) => 1 + 3,
-            (RPS::Rock, RPS::Paper) => 1 + 0,
+            (RPS::Rock, RPS::Paper) => 1,
             (RPS::Rock, RPS::Scissors) => 1 + 6,
             (RPS::Paper, RPS::Rock) => 2 + 6,
             (RPS::Paper, RPS::Paper) => 2 + 3,
-            (RPS::Paper, RPS::Scissors) => 2 + 0,
-            (RPS::Scissors, RPS::Rock) => 3 + 0,
+            (RPS::Paper, RPS::Scissors) => 2,
+            (RPS::Scissors, RPS::Rock) => 3,
             (RPS::Scissors, RPS::Paper) => 3 + 6,
             (RPS::Scissors, RPS::Scissors) => 3 + 3,
         }

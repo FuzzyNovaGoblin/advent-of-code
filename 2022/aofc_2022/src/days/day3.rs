@@ -4,10 +4,10 @@ use std::{
 };
 
 fn letter_to_number(c: char) -> u32 {
-    if c >= 'a' && c <= 'z' {
-        (c as u8 as u32) - 'a' as u8 as u32 + 1
+    if ('a'..='z').contains(&c) {
+        (c as u8 as u32) - b'a' as u32 + 1
     } else {
-        (c as u8 as u32) - 'A' as u8 as u32 + 26 + 1
+        (c as u8 as u32) - b'A' as u32 + 26 + 1
     }
 }
 
