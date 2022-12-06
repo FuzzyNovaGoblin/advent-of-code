@@ -63,14 +63,14 @@ pub fn day5_2(file_name: &str) -> impl crate::AnsType {
     stack_tops(&mut rooms)
 }
 
-fn stack_tops(rooms: &mut Vec<Room>) -> String {
+fn stack_tops(rooms: &mut [Room]) -> String {
     rooms
         .iter()
         .map(|r| r.crates.last().unwrap_or(&' '))
         .collect()
 }
 
-fn move_crates(rooms: &mut Vec<Room>, start: usize, dest: usize, repeat: usize) {
+fn move_crates(rooms: &mut [Room], start: usize, dest: usize, repeat: usize) {
     for _ in 0..repeat {
         if let Some(val) = rooms[start].crates.pop() {
             rooms[dest].crates.push(val);
@@ -78,7 +78,7 @@ fn move_crates(rooms: &mut Vec<Room>, start: usize, dest: usize, repeat: usize) 
     }
 }
 
-fn move_crates_9001(rooms: &mut Vec<Room>, start: usize, dest: usize, repeat: usize) {
+fn move_crates_9001(rooms: &mut [Room], start: usize, dest: usize, repeat: usize) {
 
     let mut tmp_stack = Vec::new();
     for _ in 0..repeat {

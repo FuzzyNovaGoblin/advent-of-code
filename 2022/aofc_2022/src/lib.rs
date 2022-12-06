@@ -140,32 +140,32 @@ mod tests {
     #[test]
     #[ignore]
     fn day4_1() {
-        assert_eq_ansval!((), days::day4::day4_1("day4"));
+        assert_eq_ansval!(500, days::day4::day4_1("day4"));
     }
     #[test]
     #[ignore]
     fn day4_2() {
-        assert_eq_ansval!((), days::day4::day4_2("day4"));
+        assert_eq_ansval!(815, days::day4::day4_2("day4"));
     }
     #[test]
     #[ignore]
     fn day5_1() {
-        assert_eq_ansval!((), days::day5::day5_1("day5"));
+        assert_eq_ansval!("TGWSMRBPN", days::day5::day5_1("day5"));
     }
     #[test]
     #[ignore]
     fn day5_2() {
-        assert_eq_ansval!((), days::day5::day5_2("day5"));
+        assert_eq_ansval!("TGWSMRBPN", days::day5::day5_2("day5"));
     }
     #[test]
     #[ignore]
     fn day6_1() {
-        assert_eq_ansval!((), days::day6::day6_1("day6"));
+        assert_eq_ansval!(1598, days::day6::day6_1("day6"));
     }
     #[test]
     #[ignore]
     fn day6_2() {
-        assert_eq_ansval!((), days::day6::day6_2("day6"));
+        assert_eq_ansval!(2414, days::day6::day6_2("day6"));
     }
     #[test]
     #[ignore]
