@@ -3,5 +3,9 @@
       "ansval",
       "aofc",
       "cals"
-   ]
+   ],
+    "files.associations": {
+        "day5": "plaintext",
+        "day6": "plaintext"
+    }
 }
