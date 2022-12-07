@@ -1,48 +1,154 @@
-use std::{collections::HashMap, fs, rc::Rc};
+use std::{cell::RefCell, fmt::Debug, fs, ops::Deref, rc::Rc};
 
-#[derive(Debug, Clone, Hash)]
+#[derive(Clone)]
 enum FsEntry {
     Dir {
-        parent: String,
-        children: Vec<FsEntry>,
+        parent: Option<Rc<FsEntry>>,
+        children: RefCell<Vec<Rc<FsEntry>>>,
+        name: String,
     },
     File {
-        parent: String,
+        parent: Rc<FsEntry>,
         size: usize,
+        name: String,
     },
 }
 
-impl FsEntry {
-    fn get_parent(&self) -> String {
+impl Debug for FsEntry {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let parent = self.get_parent().map(|e| e.get_name().to_owned());
         match self {
-            FsEntry::Dir {
-                parent,
-                children: _,
-            } => parent.clone(),
-            FsEntry::File { parent, size: _ } => parent.clone(),
+            Self::Dir {
+                parent: _,
+                children,
+                name,
+            } => f
+                .debug_struct("Dir")
+                .field("parent", &parent)
+                .field("children", children)
+                .field("name", name)
+                .finish(),
+            Self::File {
+                parent: _,
+                size,
+                name,
+            } => f
+                .debug_struct("File")
+                .field("parent", &parent)
+                .field("size", size)
+                .field("name", name)
+                .finish(),
         }
     }
 }
 
+impl FsEntry {
+    fn get_parent(&self) -> Option<Rc<FsEntry>> {
+        match self {
+            FsEntry::Dir {
+                parent,
+                name: _,
+                children: _,
+            } => parent.clone(),
+            FsEntry::File {
+                parent,
+                name: _,
+                size: _,
+            } => Some(parent.clone()),
+        }
+    }
+
+    fn get_children(&self) -> Vec<Rc<FsEntry>> {
+        match self {
+            FsEntry::Dir {
+                parent: _,
+                name: _,
+                children,
+            } => children.borrow().deref().clone(),
+            FsEntry::File {
+                parent: _,
+                name: _,
+                size: _,
+            } => Vec::new(),
+        }
+    }
+
+    fn get_name(&self) -> &str {
+        match self {
+            FsEntry::Dir {
+                parent: _,
+                children: _,
+                name,
+            } => name,
+            FsEntry::File {
+                parent: _,
+                size: _,
+                name,
+            } => name,
+        }
+    }
+
+    fn add_child(&self, child: Rc<FsEntry>) {
+        match self {
+            FsEntry::Dir {
+                parent: _,
+                children,
+                name: _,
+            } => children.borrow_mut().push(child),
+            FsEntry::File {
+                parent: _,
+                size: _,
+                name: _,
+            } => (),
+        }
+    }
+
+    fn get_size(&self) -> usize {
+        match self {
+            FsEntry::Dir {
+                parent: _,
+                children,
+                name: _,
+            } => children.borrow().iter().map(|c| c.get_size()).sum(),
+            FsEntry::File {
+                parent: _,
+                size,
+                name: _,
+            } => *size,
+        }
+    }
+
+    fn get_dir_sizes(&self) -> Vec<(String, usize)> {
+        let mut ret = vec![(self.get_name().to_owned(), self.get_size())];
+        for child in self.get_children() {
+            if let FsEntry::Dir {
+                parent: _,
+                children: _,
+                name: _,
+            } = child.clone().deref()
+            {
+                ret.extend(child.get_dir_sizes());
+            }
+        }
+        ret
+    }
+}
+
+#[derive(Debug)]
 enum InputLine {
     Command(Command),
     Dir(String),
     File(String, usize),
 }
 
+#[derive(Debug)]
 enum Command {
     Ls,
     Cd(String),
 }
 
-pub fn day7_1(file_name: &str) -> impl crate::AnsType {
-    let input_file = format!(
-        "{}/aofc_2022/input/{}",
-        env!("ADVENT_OF_CODE_2022"),
-        file_name
-    );
-    let data = fs::read_to_string(input_file).unwrap();
-    let inputLines = data
+fn build_root_dir(data: String) -> Rc<FsEntry> {
+    let input_lines = data
         .lines()
         .filter_map(|line| match line.chars().next() {
             Some('$') => {
@@ -55,10 +161,9 @@ pub fn day7_1(file_name: &str) -> impl crate::AnsType {
             }
             Some('d') => line
                 .split(' ')
-                .skip(1)
-                .next()
+                .nth(1)
                 .map(|dest| InputLine::Dir(dest.into())),
-            Some(c) => {
+            Some(_) => {
                 let parts = line.split(' ').collect::<Vec<_>>();
                 match parts[0].parse::<usize>() {
                     Ok(val) => Some(InputLine::File(parts[1].into(), val)),
@@ -69,50 +174,72 @@ pub fn day7_1(file_name: &str) -> impl crate::AnsType {
         })
         .collect::<Vec<_>>();
 
-    let mut current_dir = String::new();
-    let mut file_map = HashMap::<String, FsEntry>::new();
+    let root_dir = Rc::new(FsEntry::Dir {
+        parent: None,
+        children: RefCell::new(Vec::new()),
+        name: "/".into(),
+    });
+    let mut current_dir = root_dir.clone();
 
-    let mut i = 0;
-    while i < inputLines.len() {
-        match &inputLines[i] {
+    for line in input_lines.iter() {
+        match line {
             InputLine::Command(cmd) => match cmd {
                 Command::Cd(dir) => {
                     if dir == ".." {
-                        current_dir = file_map.get(&current_dir).unwrap().get_parent();
-                    } else if file_map.contains_key(dir) {
-                        current_dir = dir.to_owned();
+                        current_dir = current_dir.get_parent().unwrap();
+                    }
+                    if dir == "/" {
+                        current_dir = root_dir.clone();
                     } else {
-                        let new_dir = FsEntry::Dir {
-                            parent: current_dir.clone(),
-                            children: Vec::new(),
-                        };
-                        file_map.insert(dir.into(), new_dir);
-                        current_dir = dir.to_owned();
+                        for c in current_dir.get_children() {
+                            if c.get_name() == dir {
+                                current_dir = c;
+                                break;
+                            }
+                        }
                     }
                 }
                 Command::Ls => (),
             },
             InputLine::Dir(dir_name) => {
-                let new_dir = FsEntry::Dir {
-                    parent: current_dir.clone(),
-                    children: Vec::new(),
-                };
-                file_map.insert(dir_name.into(), new_dir);
+                let new_dir = Rc::new(FsEntry::Dir {
+                    parent: Some(current_dir.clone()),
+                    children: RefCell::new(Vec::new()),
+                    name: dir_name.to_owned(),
+                });
+                current_dir.add_child(new_dir);
             }
             InputLine::File(file_name, size) => {
-                let new_file = FsEntry::File {
+                let new_file = Rc::new(FsEntry::File {
                     parent: current_dir.clone(),
                     size: *size,
-                };
-                file_map.insert(file_name.into(), new_file);
+                    name: file_name.clone(),
+                });
+                current_dir.add_child(new_file);
             }
         }
-        i += 1;
     }
 
-    println!("{:?}", file_map);
+    root_dir
+}
 
-    todo!()
+pub fn day7_1(file_name: &str) -> impl crate::AnsType {
+    const AT_MOST_SIZE: usize = 100000;
+
+    let input_file = format!(
+        "{}/aofc_2022/input/{}",
+        env!("ADVENT_OF_CODE_2022"),
+        file_name
+    );
+    let data = fs::read_to_string(input_file).unwrap();
+
+    let root_dir = build_root_dir(data);
+
+    root_dir
+        .get_dir_sizes()
+        .into_iter()
+        .filter_map(|(_, v)| if v <= AT_MOST_SIZE { Some(v) } else { None })
+        .sum::<usize>()
 }
 
 pub fn day7_2(file_name: &str) -> impl crate::AnsType {
@@ -121,6 +248,26 @@ pub fn day7_2(file_name: &str) -> impl crate::AnsType {
         env!("ADVENT_OF_CODE_2022"),
         file_name
     );
-    let _data = fs::read_to_string(input_file);
-    todo!()
+
+    const TOTAL_SPACE: usize = 70000000;
+    const NEEDED_SPACE: usize = 30_000_000;
+
+    let data = fs::read_to_string(input_file).unwrap();
+    let root_dir = build_root_dir(data);
+    let need_to_delete = NEEDED_SPACE - (TOTAL_SPACE - root_dir.get_size());
+
+    let mut dir_sizes = root_dir
+        .get_dir_sizes()
+        .into_iter()
+        .filter_map(|(_, size)| {
+            if size >= need_to_delete {
+                Some(size)
+            } else {
+                None
+            }
+        })
+        .collect::<Vec<_>>();
+
+    dir_sizes.sort();
+    dir_sizes[0]
 }
