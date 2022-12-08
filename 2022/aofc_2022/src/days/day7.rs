@@ -179,6 +179,7 @@ fn build_root_dir(data: String) -> Rc<FsEntry> {
         children: RefCell::new(Vec::new()),
         name: "/".into(),
     });
+
     let mut current_dir = root_dir.clone();
 
     for line in input_lines.iter() {

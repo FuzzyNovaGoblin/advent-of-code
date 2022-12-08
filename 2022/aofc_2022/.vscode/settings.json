@@ -5,7 +5,10 @@
       "cals"
    ],
     "files.associations": {
+        "test": "plaintext",
         "day5": "plaintext",
-        "day6": "plaintext"
+        "day6": "plaintext",
+        "day7": "plaintext",
+        "day8": "plaintext"
     }
 }

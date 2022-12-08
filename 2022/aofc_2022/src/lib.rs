@@ -170,14 +170,12 @@ mod tests {
         assert_eq_ansval!(8679207, days::day7::day7_2("day7"));
     }
     #[test]
-    #[ignore]
     fn day8_1() {
-        assert_eq_ansval!((), days::day8::day8_1("day8"));
+        assert_eq_ansval!(1662, days::day8::day8_1("day8"));
     }
     #[test]
-    #[ignore]
     fn day8_2() {
-        assert_eq_ansval!((), days::day8::day8_2("day8"));
+        assert_eq_ansval!(537600, days::day8::day8_2("day8"));
     }
     #[test]
     #[ignore]
