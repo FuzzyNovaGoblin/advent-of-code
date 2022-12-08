@@ -1,5 +1,6 @@
 use std::{collections::HashSet, fs};
 
+#[allow(clippy::needless_range_loop)]
 pub fn day8_1(file_name: &str) -> impl crate::AnsType {
     let input_file = format!(
         "{}/aofc_2022/input/{}",
@@ -16,14 +17,14 @@ pub fn day8_1(file_name: &str) -> impl crate::AnsType {
         })
         .collect::<Vec<_>>();
 
-    let mut visable_trees: HashSet<(usize, usize)> = HashSet::new();
+    let mut visible_trees: HashSet<(usize, usize)> = HashSet::new();
 
     for y in 0..trees.len() {
         let mut tallest = -1;
         for x in 0..trees[y].len() {
             if trees[y][x] > tallest {
                 tallest = trees[y][x];
-                visable_trees.insert((y, x));
+                visible_trees.insert((y, x));
             }
         }
     }
@@ -32,7 +33,7 @@ pub fn day8_1(file_name: &str) -> impl crate::AnsType {
         for y in 0..trees.len() {
             if trees[y][x] > tallest {
                 tallest = trees[y][x];
-                visable_trees.insert((y, x));
+                visible_trees.insert((y, x));
             }
         }
     }
@@ -41,7 +42,7 @@ pub fn day8_1(file_name: &str) -> impl crate::AnsType {
         for x in (0..trees[y].len()).rev() {
             if trees[y][x] > tallest {
                 tallest = trees[y][x];
-                visable_trees.insert((y, x));
+                visible_trees.insert((y, x));
             }
         }
     }
@@ -50,12 +51,12 @@ pub fn day8_1(file_name: &str) -> impl crate::AnsType {
         for y in (0..trees.len()).rev() {
             if trees[y][x] > tallest {
                 tallest = trees[y][x];
-                visable_trees.insert((y, x));
+                visible_trees.insert((y, x));
             }
         }
     }
 
-    visable_trees.len()
+    visible_trees.len()
 }
 
 fn calc_scenic_score(trees: &Vec<Vec<i32>>, tree_x: usize, tree_y: usize) -> i32 {
