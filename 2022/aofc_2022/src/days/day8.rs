@@ -92,7 +92,7 @@ fn calc_scenic_score(trees: &Vec<Vec<i32>>, tree_x: usize, tree_y: usize) -> i32
         }
     }
 
-    score.into_iter().fold(1, |acc, v| acc * v)
+    score.into_iter().product()
 }
 
 pub fn day8_2(file_name: &str) -> impl crate::AnsType {
@@ -112,33 +112,8 @@ pub fn day8_2(file_name: &str) -> impl crate::AnsType {
         })
         .collect::<Vec<_>>();
 
-    let mut biggest_score = 0;
-
-    for y in 0..trees.len() {
-        for x in 0..trees[y].len() {
-            let score = calc_scenic_score(&trees, x, y);
-            if score > biggest_score {
-                biggest_score = score;
-            }
-        }
-    }
-
-    biggest_score
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-    use crate::assert_eq_ansval;
-
-    #[test]
-    #[ignore]
-    fn t1() {
-        assert_eq_ansval!((), day8_1("test"));
-    }
-    #[test]
-    #[ignore]
-    fn t2() {
-        assert_eq_ansval!((), day8_2("test"));
-    }
+    (0..trees.len())
+        .flat_map(|y| (0..trees[y].len()).map(move |x| (x, y)))
+        .map(|(x, y)| calc_scenic_score(&trees, x, y))
+        .max()
 }
