@@ -180,12 +180,12 @@ mod tests {
     #[test]
     #[ignore]
     fn day9_1() {
-        assert_eq_ansval!((), days::day9::day9_1("day9"));
+        assert_eq_ansval!(6357, days::day9::day9_1("day9"));
     }
     #[test]
     #[ignore]
     fn day9_2() {
-        assert_eq_ansval!((), days::day9::day9_2("day9"));
+        assert_eq_ansval!(2627, days::day9::day9_2("day9"));
     }
     #[test]
     #[ignore]
