@@ -103,20 +103,3 @@ pub fn day9_2(file_name: &str) -> impl crate::AnsType {
 
     rope.tail_been_to.len()
 }
-
-#[cfg(test)]
-mod test {
-    use super::*;
-    use crate::assert_eq_ansval;
-
-    #[test]
-    #[ignore]
-    fn t1() {
-        assert_eq_ansval!((), day9_1("test"));
-    }
-    #[test]
-    #[ignore]
-    fn t2() {
-        assert_eq_ansval!((), day9_2("test"));
-    }
-}
