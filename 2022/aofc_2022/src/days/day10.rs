@@ -17,9 +17,7 @@ pub fn day10_1(file_name: &str) -> impl crate::AnsType {
         () => {
             cycle += 1;
             match cycle {
-                20 | 60 | 100 | 140 | 180 | 220 => {
-                    sum += cycle * x_reg
-                }
+                20 | 60 | 100 | 140 | 180 | 220 => sum += cycle * x_reg,
                 _ => (),
             }
         };
@@ -29,12 +27,9 @@ pub fn day10_1(file_name: &str) -> impl crate::AnsType {
         let parts = line.split(' ').collect::<Vec<_>>();
 
         cycle_inc!();
-        match parts[0] {
-            "addx" => {
-                cycle_inc!();
-                x_reg += parts[1].parse::<i32>().unwrap();
-            }
-            _ => (),
+        if parts[0] == "addx" {
+            cycle_inc!();
+            x_reg += parts[1].parse::<i32>().unwrap();
         }
     });
 
@@ -42,7 +37,7 @@ pub fn day10_1(file_name: &str) -> impl crate::AnsType {
 }
 
 pub fn day10_2(file_name: &str) -> impl crate::AnsType {
-  let input_file = format!(
+    let input_file = format!(
         "{}/aofc_2022/input/{}",
         env!("ADVENT_OF_CODE_2022"),
         file_name
@@ -56,13 +51,13 @@ pub fn day10_2(file_name: &str) -> impl crate::AnsType {
         () => {
             let crt_pixel = cycle % 40;
 
-            if crt_pixel ==  x_reg - 1|| crt_pixel ==  x_reg  ||  crt_pixel ==  x_reg +1{
+            if crt_pixel == x_reg - 1 || crt_pixel == x_reg || crt_pixel == x_reg + 1 {
                 print!("#");
-            }else{
+            } else {
                 print!(".");
             }
             cycle += 1;
-            if crt_pixel == 39{
+            if crt_pixel == 39 {
                 println!();
             }
         };
@@ -72,13 +67,9 @@ pub fn day10_2(file_name: &str) -> impl crate::AnsType {
         let parts = line.split(' ').collect::<Vec<_>>();
 
         cycle_inc!();
-        match parts[0] {
-            "addx" => {
-                cycle_inc!();
-                x_reg += parts[1].parse::<i32>().unwrap();
-            }
-            _ => (),
+        if parts[0] == "addx" {
+            cycle_inc!();
+            x_reg += parts[1].parse::<i32>().unwrap();
         }
     });
-
 }

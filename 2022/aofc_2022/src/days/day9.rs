@@ -1,4 +1,4 @@
-use std::{collections::HashSet, fmt::Display, fs};
+use std::{collections::HashSet, fs};
 
 #[derive(Debug)]
 struct Rope {

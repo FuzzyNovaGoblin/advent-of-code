@@ -79,15 +79,13 @@ fn move_crates(rooms: &mut [Room], start: usize, dest: usize, repeat: usize) {
 }
 
 fn move_crates_9001(rooms: &mut [Room], start: usize, dest: usize, repeat: usize) {
-
     let mut tmp_stack = Vec::new();
     for _ in 0..repeat {
         if let Some(val) = rooms[start].crates.pop() {
             tmp_stack.push(val);
-
         }
     }
-    for val in tmp_stack.iter().rev(){
+    for val in tmp_stack.iter().rev() {
         rooms[dest].crates.push(*val);
     }
 }

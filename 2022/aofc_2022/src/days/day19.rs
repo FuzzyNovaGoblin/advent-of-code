@@ -1,18 +1,24 @@
 use std::fs;
 
 pub fn day19_1(file_name: &str) -> impl crate::AnsType {
-let input_file = format!("{}/aofc_2022/input/{}", env!("ADVENT_OF_CODE_2022"), file_name);
+    let input_file = format!(
+        "{}/aofc_2022/input/{}",
+        env!("ADVENT_OF_CODE_2022"),
+        file_name
+    );
     let _data = fs::read_to_string(input_file);
-	todo!()
+    todo!()
 }
 
 pub fn day19_2(file_name: &str) -> impl crate::AnsType {
-let input_file = format!("{}/aofc_2022/input/{}", env!("ADVENT_OF_CODE_2022"), file_name);
+    let input_file = format!(
+        "{}/aofc_2022/input/{}",
+        env!("ADVENT_OF_CODE_2022"),
+        file_name
+    );
     let _data = fs::read_to_string(input_file);
-	todo!()
+    todo!()
 }
-
-
 
 #[cfg(test)]
 mod test {

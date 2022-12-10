@@ -102,8 +102,6 @@ impl<T: Debug> AnsType for Option<T> {
     }
 }
 
-
-
 impl<T: Display + AnsNotDisplay> AnsType for T {
     fn value(&self) -> String {
         format!("{}", self)
@@ -225,7 +223,7 @@ mod tests {
     #[test]
     #[ignore]
     fn day13_2() {
-        assert_eq_ansval!((), days::day13::day13_2("day13") );
+        assert_eq_ansval!((), days::day13::day13_2("day13"));
     }
     #[test]
     #[ignore]

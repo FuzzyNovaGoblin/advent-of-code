@@ -57,4 +57,3 @@ pub fn day4_2(file_name: &str) -> impl crate::AnsType {
         })
         .count()
 }
-

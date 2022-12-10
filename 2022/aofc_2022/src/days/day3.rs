@@ -50,7 +50,7 @@ pub fn day3_2(file_name: &str) -> impl crate::AnsType {
         .zip(data.lines().skip(1).step_by(3))
         .zip(data.lines().skip(2).step_by(3))
         .map(|group| {
-            let group = vec![group.0.0, group.0.1, group.1];
+            let group = vec![group.0 .0, group.0 .1, group.1];
             let mut working_hash_map: HashMap<char, u32> = HashMap::new();
 
             for line in group {
