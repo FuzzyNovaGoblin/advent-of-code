@@ -5,3 +5,10 @@ version = 3
 [[package]]
 name = "aofc_2022"
 version = "0.1.0"
+dependencies = [
+ "flux_bnf",
+]
+
+[[package]]
+name = "flux_bnf"
+version = "0.1.0"

@@ -6,10 +6,30 @@
    ],
     "files.associations": {
         "test": "plaintext",
+        "day1": "plaintext",
+        "day2": "plaintext",
+        "day3": "plaintext",
+        "day4": "plaintext",
         "day5": "plaintext",
         "day6": "plaintext",
         "day7": "plaintext",
         "day8": "plaintext",
-        "day9": "plaintext"
+        "day9": "plaintext",
+        "day10": "plaintext",
+        "day11": "plaintext",
+        "day12": "plaintext",
+        "day13": "plaintext",
+        "day14": "plaintext",
+        "day15": "plaintext",
+        "day16": "plaintext",
+        "day17": "plaintext",
+        "day18": "plaintext",
+        "day19": "plaintext",
+        "day20": "plaintext",
+        "day21": "plaintext",
+        "day22": "plaintext",
+        "day23": "plaintext",
+        "day24": "plaintext",
+        "day25": "plaintext"
     }
 }

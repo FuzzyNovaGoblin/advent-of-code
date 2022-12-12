@@ -1,0 +1,17 @@
+sep ::= [ \t\n]*
+num ::= [0-9]+
+word ::= [a-z]+
+
+startItems ::= "Starting items:" sep (num (sep "," sep num)*)
+
+operand ::= num | word
+operator ::= [+*/-]
+operation ::= "Operation: new =" sep operand sep operator sep operand
+
+bool ::= "true" | "false"
+throwToCommand ::= "throw to monkey" sep num
+ifCase ::= "If" sep bool ":" sep throwToCommand
+test ::= "Test: divisible by" sep num sep ifCase sep ifCase
+
+monkey ::= "Monkey " sep num ":" sep startItems sep operation sep test
+root ::= monkey (sep monkey)*
