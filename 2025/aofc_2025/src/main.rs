@@ -1,4 +1,5 @@
 #![feature(concat_idents)]
+#![feature(int_from_ascii)]
 
 use std::{collections::HashSet, env::args};
 
