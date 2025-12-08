@@ -50,7 +50,6 @@ mod manifold_map {
     use crate::days::day7::map_point::MapPoint;
     use crate::days::day7::map_point::MapPoint::*;
     use std::{
-        collections::HashSet,
         fmt::{Debug, Display},
         ops,
     };
@@ -85,8 +84,6 @@ mod manifold_map {
             }
         }
         pub fn simulate_beam(&self) -> u64 {
-            // let mut dbg_map = self.clone();
-
             let mut count = 0;
             let mut beam_positions = vec![self.source];
             for i in 1..self.height() {
@@ -119,38 +116,9 @@ mod manifold_map {
                     .enumerate()
                     .filter_map(|(i, &mp)| if mp == Beam { Some(i) } else { None })
                     .collect();
-                // dbg_map.points[i] = next_layer;
-
-                // dbg!(count, &dbg_map);
             }
 
             count
-        }
-
-        pub fn run_beam(&mut self) -> &mut Self {
-            let mut beam_positions = vec![self.source];
-            for i in 1..self.height() {
-                // let mut next_layer = self.points[i].clone();
-                for &bp in beam_positions.iter() {
-                    match self[i][bp] {
-                        Splitter => {
-                            self[i][bp - 1] = Beam;
-                            self[i][bp + 1] = Beam
-                        }
-                        _ => self[i][bp] = Beam,
-                    }
-                }
-                beam_positions = self[i]
-                    .iter()
-                    .enumerate()
-                    .filter_map(|(i, &mp)| if mp == Beam { Some(i) } else { None })
-                    .collect();
-                // dbg_map.points[i] = next_layer;
-
-                // dbg!(count, &dbg_map);
-            }
-
-            self
         }
 
         pub fn simulate_quantum_beam(&self) -> Vec<u64> {
@@ -164,29 +132,19 @@ mod manifold_map {
                         Blank => count_map[i][bp] = BeamPath(count_map[i - 1][bp].count()),
                         Splitter => {
                             count_map[i][bp - 1] = match count_map[i][bp - 1] {
-                                Blank => BeamPath(count_map[i - 1][bp].count() ),
+                                Blank => BeamPath(count_map[i - 1][bp].count()),
                                 BeamPath(c) => BeamPath(c + count_map[i - 1][bp].count()),
                                 _ => unreachable!(),
                             };
                             count_map[i][bp + 1] = match count_map[i][bp + 1] {
-                                Blank => BeamPath(count_map[i - 1][bp].count() ),
+                                Blank => BeamPath(count_map[i - 1][bp].count()),
                                 BeamPath(c) => BeamPath(c + count_map[i - 1][bp].count()),
                                 _ => unreachable!(),
                             };
-
-                            // if next_layer[bp - 1] != Beam {
-                            //     next_layer[bp - 1] = Beam;
-                            //     splits = true;
-                            // }
-                            // if next_layer[bp + 1] != Beam {
-                            //     next_layer[bp + 1] = Beam;
-                            //     splits = true;
-                            // }
-                            // if splits {
-                            //     // count += 1
-                            // }
                         }
-                        BeamPath(c) => count_map[i][bp] = BeamPath(c + count_map[i - 1][bp].count()),
+                        BeamPath(c) => {
+                            count_map[i][bp] = BeamPath(c + count_map[i - 1][bp].count())
+                        }
                         _ => unreachable!(),
                     }
                 }
@@ -201,79 +159,13 @@ mod manifold_map {
                         }
                     })
                     .collect();
-                // dbg_map.points[i] = next_layer;
-
-                // dbg!(count, &dbg_map);
             }
-
-            /* // let mut maps = HashSet::new();
-            // maps.insert(self.clone());
-            let mut maps = vec![self.clone()];
-
-            for i in 1..self.height() {
-                maps = maps
-                    .into_iter()
-                    // maps = maps.drain()
-                    .flat_map(|m| m.step_quantum_beam(i))
-                    .collect();
-
-                // dbg!(&maps);
-                dbg!((i, maps.len()));
-            }
-            // dbg!(&maps);
-            maps.len() as u64 */
-
-            dbg!(ManifoldMap {
-                points: count_map.clone(),
-                ..*self
-            });
 
             count_map
                 .last()
                 .unwrap()
                 .iter()
                 .map(MapPoint::count)
-                .collect()
-        }
-        pub fn step_quantum_beam(self, sim_level: usize) -> Vec<Self> {
-            let beam_positions = self.points[sim_level - 1]
-                .iter()
-                .enumerate()
-                .filter_map(|(i, &mp)| {
-                    if mp == Beam || mp == Source {
-                        Some(i)
-                    } else {
-                        None
-                    }
-                })
-                .collect::<Vec<_>>();
-            let mut used_points = Vec::new();
-            for b in beam_positions {
-                match self.points[sim_level][b] {
-                    Blank => {
-                        if !used_points.contains(&b) {
-                            used_points.push(b)
-                        }
-                    }
-                    Splitter => {
-                        if !used_points.contains(&(b - 1)) {
-                            used_points.push(b - 1)
-                        }
-                        if !used_points.contains(&(b + 1)) {
-                            used_points.push(b + 1)
-                        }
-                    }
-                    BeamPath(_) | Beam => (),
-                    Source => unreachable!(),
-                }
-            }
-            used_points
-                .into_iter()
-                .map(|point| {
-                    let mut new = self.clone();
-                    new.points[sim_level][point] = Beam;
-                    new
-                })
                 .collect()
         }
     }
@@ -332,9 +224,8 @@ pub fn day7_2(file_name: &str) -> impl crate::AnsType {
     );
     let data = fs::read_to_string(input_file).unwrap();
 
-    let mut map = ManifoldMap::new(data);
-    // dbg!(map.run_beam());
-    dbg!(map.simulate_quantum_beam()).iter().sum::<u64>()
+    let map = ManifoldMap::new(data);
+    map.simulate_quantum_beam().iter().sum::<u64>()
 }
 
 #[cfg(test)]
@@ -350,6 +241,6 @@ mod test {
     #[test]
     #[ignore]
     fn t2() {
-        assert_eq_ansval!(40, day7_2("test"));
+        assert_eq_ansval!(36706966158365_u64, day7_2("day7"));
     }
 }
