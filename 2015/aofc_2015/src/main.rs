@@ -2,7 +2,7 @@
 
 use std::{collections::HashSet, env::args};
 
-use aofc_2015::{AnsType, days::day1, prelude::*};
+use aofc_2015::{AnsType, days::{day1, day2}, prelude::*};
 
 // macro_rules! getday_fn {
 //     ( $day_num:expr, $do_run:expr, $is_test:expr , $($n:ident),*) => {
@@ -39,10 +39,14 @@ use aofc_2015::{AnsType, days::day1, prelude::*};
 // }
 
 fn main() {
-    let res1 = day1::day1_1("day1");
-    let res2 = day1::day1_2("day1");
+    let res1 = day2::day2_1("day2");
     println!("part 1: {:?}", res1);
+
+    let res2 = day2::day2_2("day2");
     println!("part 2: {:?}", res2);
+
+
+
     // let mut args = args();
     // let day_num = args
     //     .nth(1)
