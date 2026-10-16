@@ -10,7 +10,7 @@ fn dir_to_vector(dir: char) -> (i32, i32) {
     }
 }
 
-pub fn day3_1(file_name: &str) -> usize {
+pub fn day3_1(file_name: &str) -> impl crate::AnsType {
     let input_file = format!(
         "/home/fuzzy/DevSSD/advent-of-code/2015/aofc_2015/input/{}",
         file_name
@@ -30,7 +30,7 @@ pub fn day3_1(file_name: &str) -> usize {
     seen_house.len()
 }
 
-pub fn day3_2(file_name: &str) -> usize {
+pub fn day3_2(file_name: &str) -> impl crate::AnsType {
      let input_file = format!(
         "/home/fuzzy/DevSSD/advent-of-code/2015/aofc_2015/input/{}",
         file_name

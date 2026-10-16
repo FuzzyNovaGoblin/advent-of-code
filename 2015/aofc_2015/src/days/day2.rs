@@ -7,7 +7,7 @@ struct BoxDimensions {
     h: i32,
 }
 
-pub fn day2_1(file_name: &str) -> i32 {
+pub fn day2_1(file_name: &str) -> impl crate::AnsType {
     let input_file = format!(
         "/home/fuzzy/DevSSD/advent-of-code/2015/aofc_2015/input/{}",
         file_name
@@ -23,10 +23,10 @@ pub fn day2_1(file_name: &str) -> i32 {
             }
         })
         .map(|d| d.wrapping_needed())
-        .sum()
+        .sum::<i32>()
 }
 
-pub fn day2_2(file_name: &str) -> i32 {
+pub fn day2_2(file_name: &str) -> impl crate::AnsType {
     let input_file = format!(
         "/home/fuzzy/DevSSD/advent-of-code/2015/aofc_2015/input/{}",
         file_name
@@ -42,7 +42,7 @@ pub fn day2_2(file_name: &str) -> i32 {
             }
         })
         .map(|d| d.ribbon_needed())
-        .sum()
+        .sum::<i32>()
 }
 
 impl BoxDimensions {

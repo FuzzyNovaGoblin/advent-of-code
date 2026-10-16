@@ -1,6 +1,6 @@
 use std::fs;
 
-pub fn day1_1(file_name: &str) -> i32{
+pub fn day1_1(file_name: &str) -> impl crate::AnsType{
     let input_file = format!(
         "/home/fuzzy/DevSSD/advent-of-code/2015/aofc_2015/input/{}",
         file_name
@@ -9,7 +9,7 @@ pub fn day1_1(file_name: &str) -> i32{
     data.chars().map(|c| if c == '(' { 1 } else { -1 }).sum::<i32>()
 }
 
-pub fn day1_2(file_name: &str) -> usize {
+pub fn day1_2(file_name: &str) -> impl crate::AnsType {
     let input_file = format!(
         "/home/fuzzy/DevSSD/advent-of-code/2015/aofc_2015/input/{}",
         file_name
@@ -23,9 +23,7 @@ pub fn day1_2(file_name: &str) -> usize {
             return i + 1;
         }
     }
-    // data.len()+1
     unreachable!()
-    // data.chars().map(|c| if c == '(' { 1 } else { -1 }).sum::<i32>()
 }
 
 #[cfg(test)]

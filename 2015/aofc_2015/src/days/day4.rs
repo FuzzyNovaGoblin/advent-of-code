@@ -1,7 +1,7 @@
-use md5::{Context, Digest};
+use md5::Context;
 use std::fs;
 
-pub fn day4_1(file_name: &str) -> usize {
+pub fn day4_1(file_name: &str) -> impl crate::AnsType {
     let input_file = format!(
         "/home/fuzzy/DevSSD/advent-of-code/2015/aofc_2015/input/{}",
         file_name
@@ -16,12 +16,11 @@ pub fn day4_1(file_name: &str) -> usize {
         if hash[0..2] == [0; 2] && hash[2] >> 4 == 0 {
             return i;
         }
-
     }
     unreachable!()
 }
 
-pub fn day4_2(file_name: &str) -> usize {
+pub fn day4_2(file_name: &str) -> impl crate::AnsType {
     let input_file = format!(
         "/home/fuzzy/DevSSD/advent-of-code/2015/aofc_2015/input/{}",
         file_name
@@ -36,7 +35,6 @@ pub fn day4_2(file_name: &str) -> usize {
         if hash[0..3] == [0; 3] {
             return i;
         }
-
     }
     unreachable!()
 }
