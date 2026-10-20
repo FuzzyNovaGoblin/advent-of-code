@@ -30,8 +30,7 @@ fn escape_line<S: AsRef<str>>(line: S) -> String {
             .map(|c| match c {
                 '\\' => vec!['\\', '\\'],
                 '"' => vec!['\\', '"'],
-                '"' => vec!['\\', '"'],
-                c => vec!['c'],
+                c => vec![c],
             })
             .flatten()
             .collect::<String>()
