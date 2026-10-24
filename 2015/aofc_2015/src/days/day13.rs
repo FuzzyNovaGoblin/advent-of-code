@@ -21,7 +21,6 @@ fn generate_recursion(
         new_prefix.push(i);
 
         for generated in generate_recursion(new_prefix, length, depth + 1, target_depth) {
-            let next = prefix.clone();
             ret.push(generated);
         }
     }
